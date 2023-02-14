@@ -1,7 +1,7 @@
 import { v5 } from 'uuid';
 import {
   OctoBackend,
-  Config,
+  BaseConfig,
   SubRequestDataManager,
   BackendParams
 } from "@octocloud/core";
@@ -25,10 +25,9 @@ export enum RequestMethod {
 }
 
 export abstract class APIClient {
-  private config = new Config();
   private errorHandler = new OctoApiErrorHandler();
 
-  constructor(private beforeRequest: BeforeRequest) {}
+  constructor(private beforeRequest: BeforeRequest, private config: BaseConfig) {}
 
   protected get = (url: string, params: ApiClientParams): Promise<Response> => {
     return this.fetch(url, RequestMethod.Get, params);

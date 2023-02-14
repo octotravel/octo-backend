@@ -37,6 +37,7 @@ import {
   ExtendOrderSchema,
   LookupSchema,
   GetMappingsSchema,
+  BaseConfig,
 } from "@octocloud/core";
 import { APIClient } from "./Client";
 
@@ -117,8 +118,10 @@ export class API extends APIClient implements IAPI {
     return backend.endpoint;
   };
 
-  constructor(@inject("BeforeRequest") beforeRequest: BeforeRequest) {
-    super(beforeRequest)
+  constructor(@inject("BeforeRequest") beforeRequest: BeforeRequest,
+  @inject("Config") config: BaseConfig
+  ) {
+    super(beforeRequest, config)
   }
 
   public getProduct = async (

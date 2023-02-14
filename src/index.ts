@@ -35,6 +35,7 @@ import {
   UpdateBookingSchema,
   GetMappingsSchema,
   BackendParams,
+  BaseConfig,
 } from "@octocloud/core";
 
 
@@ -55,6 +56,7 @@ export type BeforeRequest = ({request}: {request: Request}) => Promise<Request>
 
 interface BackendContainerData {
   beforeRequest?: BeforeRequest
+  config: BaseConfig
 }
 
 const noopBeforeRequest: BeforeRequest = ({request}) => {
@@ -67,9 +69,10 @@ export class BackendContainer {
   private _backend: OctoBackend;
 
   constructor(data: BackendContainerData) {
-    const { beforeRequest } = data
-    octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest })
-    this._backend = octoContainer.resolve(OctoBackend)
+    const { beforeRequest, config } = data
+    octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest });
+    octoContainer.register('Config', { useValue: config });
+    this._backend = octoContainer.resolve(OctoBackend);
   }
 
   public get backend () {
