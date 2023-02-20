@@ -38,7 +38,6 @@ import {
   BaseConfig,
 } from "@octocloud/core";
 
-
 import { CheckInService } from "./services/CheckinService";
 import { PaymentService } from "./services/PaymentService";
 import { OrderService } from "./services/OrderService";
