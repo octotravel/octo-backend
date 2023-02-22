@@ -1,17 +1,15 @@
 import { inject, singleton } from "tsyringe";
 import { BackendParams,
-  CreateWebhookSchema,
-  DeleteWebhookSchema,
-  Webhook,
  } from '@octocloud/core';
 import type { IAPI } from "../api/Api";
+import { CreateWebhookBodyParamsSchema, DeleteWebhookPathParamsSchema, Webhook } from "@octocloud/types";
 
 export interface IWebhookService {
   createWebhook(
-    schema: CreateWebhookSchema,
+    schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
   ): Promise<Webhook>;
-  deleteWebhook(schema: DeleteWebhookSchema, params: BackendParams): Promise<void>;
+  deleteWebhook(schema: DeleteWebhookPathParamsSchema, params: BackendParams): Promise<void>;
   listWebhooks(params: BackendParams): Promise<Webhook[]>;
 }
 
@@ -22,12 +20,12 @@ export class WebhookService implements IWebhookService {
   }
 
   public createWebhook = (
-    schema: CreateWebhookSchema,
+    schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
   ): Promise<Webhook> => this.api.createWebhook(schema, params);
 
   public deleteWebhook = (
-    schema: DeleteWebhookSchema,
+    schema: DeleteWebhookPathParamsSchema,
     params: BackendParams,
   ): Promise<void> => this.api.deleteWebhook(schema, params);
 

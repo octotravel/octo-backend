@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@octocloud/core": "github:octotravel/octo-core#master",
-    "@octocloud/types": "^1.3.5",
+    "@octocloud/types": "github:octotravel/octo-types#main",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^1.3.7",
     "dinero.js": "^2.0.0-alpha.8",

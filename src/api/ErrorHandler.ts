@@ -1,6 +1,6 @@
 import {
   BaseConnection,
-  RequestDataManager,
+  RequestContext,
   IBaseRequestData,
   SubRequestData,
   HttpError,
@@ -26,7 +26,7 @@ import {
   OctoUnprocessableEntityError,
   UNAUTHORIZED,
   UNPROCESSABLE_ENTITY,
-  Config
+  BaseConfig
 } from "@octocloud/core";
 
 type OctoApiErrorHandlerOutput = {
@@ -37,7 +37,7 @@ type OctoApiErrorHandlerOutput = {
 export class OctoApiErrorHandler {
   public handleError = async (
     requestData: SubRequestData,
-    rdm: RequestDataManager<BaseConnection, Config>,
+    ctx: RequestContext,
     subRequestId: string,
     retryAttempt: number,
   ): Promise<OctoApiErrorHandlerOutput> => {
@@ -50,7 +50,7 @@ export class OctoApiErrorHandler {
       try {
         body = await response.json();
       } catch (err) {
-        rdm.enableAlert();
+        ctx.enableAlert();
         return {
           requestData,
           shouldRetry: canRetry,
@@ -68,7 +68,7 @@ export class OctoApiErrorHandler {
         message: body?.errorMessage ?? response.statusText,
         body: body,
         error: body?.error ?? null,
-        requestId: rdm.getRequestId(),
+        requestId: ctx.getRequestId(),
         subRequestId,
       };
 

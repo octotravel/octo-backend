@@ -1,4 +1,4 @@
-import { OctoConnectionBackend, connectionSchema, OctoConnectionPatchBackend, connectionPatchSchema } from './schemas/Connection';
+import { connectionSchema, connectionPatchSchema } from './schemas/Connection';
 import { inject, singleton } from "tsyringe";
 import {
   Availability,
@@ -11,24 +11,25 @@ import {
   Mapping,
   Product,
   Supplier,
+  CreateWebhookBodyParamsSchema,
+  DeleteWebhookPathParamsSchema,
+  Webhook,
+  Order,
 } from "@octocloud/types";
 import {
   CancelOrderSchema,
   ConfirmOrderSchema,
   CreateOrderSchema,
-  DeleteWebhookSchema,
   ExtendOrderSchema,
   GetBookingsSchema,
   GetOrderSchema,
   LookupSchema,
   UpdateMappingsSchema,
   UpdateOrderSchema,
-  Webhook,
   Backend,
   CancelBookingSchema,
   ConfirmBookingSchema,
   CreateBookingSchema,
-  CreateWebhookSchema,
   ExtendBookingSchema,
   GetBookingSchema,
   GetProductsPathParamsSchema,
@@ -61,8 +62,6 @@ interface BackendContainerData {
 const noopBeforeRequest: BeforeRequest = ({request}) => {
   return Promise.resolve(request)
 }
-
-
 
 export class BackendContainer {
   private _backend: OctoBackend;
@@ -172,12 +171,12 @@ class OctoBackend implements Backend {
     this.supplierService.getSupplier(params);
 
   public createWebhook = (
-    schema: CreateWebhookSchema,
+    schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
   ): Promise<Webhook> => this.webhookService.createWebhook(schema, params);
 
   public deleteWebhook = (
-    schema: DeleteWebhookSchema,
+    schema: DeleteWebhookPathParamsSchema,
     params: BackendParams,
   ): Promise<void> => this.webhookService.deleteWebhook(schema, params);
 
@@ -195,37 +194,37 @@ class OctoBackend implements Backend {
   public createOrder = (
     schema: CreateOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.createOrder(schema, params);
+  ): Promise<Order> => this.orderService.createOrder(schema, params);
 
   public updateOrder = (
     schema: UpdateOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.updateOrder(schema, params);
+  ): Promise<Order> => this.orderService.updateOrder(schema, params);
 
   public getOrder = (
     schema: GetOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.getOrder(schema, params);
+  ): Promise<Order> => this.orderService.getOrder(schema, params);
 
   public confirmOrder = (
     schema: ConfirmOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.confirmOrder(schema, params);
+  ): Promise<Order> => this.orderService.confirmOrder(schema, params);
 
   public cancelOrder = (
     schema: CancelOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.cancelOrder(schema, params);
+  ): Promise<Order> => this.orderService.cancelOrder(schema, params);
 
   public deleteOrder = (
     schema: CancelOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.deleteOrder(schema, params);
+  ): Promise<Order> => this.orderService.deleteOrder(schema, params);
 
   public extendOrder = (
     schema: ExtendOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => this.orderService.extendOrder(schema, params);
+  ): Promise<Order> => this.orderService.extendOrder(schema, params);
 
   public getGateway = (params: BackendParams): Promise<unknown> =>
     this.paymentService.getGateway(params);

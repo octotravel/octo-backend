@@ -2,7 +2,7 @@ import { v5 } from 'uuid';
 import {
   OctoBackend,
   BaseConfig,
-  SubRequestDataManager,
+  SubRequestContext,
   BackendParams
 } from "@octocloud/core";
 import { BeforeRequest } from './../index';
@@ -65,24 +65,24 @@ export abstract class APIClient {
     retryAttempt = 0,
   ): Promise<Response> => {
     console.log(new Date().toISOString(), method, url);
-    const subRequestDataManager = new SubRequestDataManager();
+    const subRequestContext = new SubRequestContext();
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
-    subRequestDataManager.initRequestData({
+    subRequestContext.initRequestData({
       request: req.clone(),
-      requestId: params.rdm.getRequestId(),
-      accountId: params.rdm.getAccountId(),
+      requestId: params.ctx.getRequestId(),
+      accountId: params.ctx.getAccountId(),
     });
 
     const res = await fetch(req);
 
-    const requestData = subRequestDataManager.getRequestData(res);
-    params.rdm.addSubrequest(requestData.clone());
+    const requestData = subRequestContext.getRequestData(res);
+    params.ctx.addSubrequest(requestData.clone());
 
     const { shouldRetry } = await this.errorHandler.handleError(
       requestData,
-      params.rdm,
-      subRequestDataManager.getSubRequestId(),
+      params.ctx,
+      subRequestContext.getSubRequestId(),
       retryAttempt,
     );
 
@@ -103,7 +103,7 @@ export abstract class APIClient {
     params: ApiClientParams,
   ): Promise<Request> => {
     const env = this.config.isProduction ? "live" : "test";
-    const backend = params.rdm.getConnection().backend as OctoBackend;
+    const backend = params.ctx.getConnection().backend as OctoBackend;
     const headersInit = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${backend.apiKey}`,
@@ -118,7 +118,7 @@ export abstract class APIClient {
     const body = this.prepareBody(params.body);
 
     if (params.useIdempotency) {
-      const mainRequest = params.rdm.getRequest().clone();
+      const mainRequest = params.ctx.getRequest().clone();
       let mainRequestBody = '';
       try {
         mainRequestBody = await mainRequest.json();
@@ -161,7 +161,7 @@ export abstract class APIClient {
   };
 
   private mapCapabilities = (params: ApiClientParams): string => {
-    const request = params.rdm.getRequest();
+    const request = params.ctx.getRequest();
     const capabilitiesHeader = request.headers.get("Octo-Capabilities");
     if (capabilitiesHeader) {
       return capabilitiesHeader;

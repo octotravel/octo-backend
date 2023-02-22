@@ -8,11 +8,15 @@ import type {
   AvailabilityCalendarBodySchema,
   Booking,
   Capability,
+  CreateWebhookBodyParamsSchema,
+  DeleteWebhookPathParamsSchema,
   GetBookingsQueryParamsSchema,
   GetProductPathParamsSchema,
   Mapping,
+  Order,
   Product,
   Supplier,
+  Webhook,
 } from "@octocloud/types";
 import {
   BaseConnection,
@@ -25,9 +29,6 @@ import {
   ConfirmBookingSchema,
   CancelBookingSchema,
   ExtendBookingSchema,
-  CreateWebhookSchema,
-  Webhook,
-  DeleteWebhookSchema,
   UpdateMappingsSchema,
   CreateOrderSchema,
   UpdateOrderSchema,
@@ -89,23 +90,23 @@ export interface IAPI {
   ): Promise<Booking[]>;
   getSupplier(params: BackendParams): Promise<Supplier>;
   createWebhook(
-    schema: CreateWebhookSchema,
+    schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
   ): Promise<Webhook>;
-  deleteWebhook(schema: DeleteWebhookSchema, params: BackendParams): Promise<void>;
+  deleteWebhook(schema: DeleteWebhookPathParamsSchema, params: BackendParams): Promise<void>;
   listWebhooks(params: BackendParams): Promise<Array<Webhook>>;
   updateMappings(
     schema: UpdateMappingsSchema,
     params: BackendParams,
   ): Promise<void>;
   getMappings(schema: GetMappingsSchema, params: BackendParams): Promise<Array<Mapping>>;
-  createOrder(schema: CreateOrderSchema, params: BackendParams): Promise<unknown>;
-  updateOrder(schema: UpdateOrderSchema, params: BackendParams): Promise<unknown>;
-  getOrder(schema: GetOrderSchema, params: BackendParams): Promise<unknown>;
-  confirmOrder(schema: ConfirmOrderSchema, params: BackendParams): Promise<unknown>;
-  cancelOrder(schema: CancelOrderSchema, params: BackendParams): Promise<unknown>;
-  deleteOrder(schema: CancelOrderSchema, params: BackendParams): Promise<unknown>;
-  extendOrder(schema: ExtendOrderSchema, params: BackendParams): Promise<unknown>;
+  createOrder(schema: CreateOrderSchema, params: BackendParams): Promise<Order>;
+  updateOrder(schema: UpdateOrderSchema, params: BackendParams): Promise<Order>;
+  getOrder(schema: GetOrderSchema, params: BackendParams): Promise<Order>;
+  confirmOrder(schema: ConfirmOrderSchema, params: BackendParams): Promise<Order>;
+  cancelOrder(schema: CancelOrderSchema, params: BackendParams): Promise<Order>;
+  deleteOrder(schema: CancelOrderSchema, params: BackendParams): Promise<Order>;
+  extendOrder(schema: ExtendOrderSchema, params: BackendParams): Promise<Order>;
   getGateway(params: BackendParams): Promise<unknown>;
   lookup(schema: LookupSchema, params: BackendParams): Promise<unknown>;
   getCapabilities(params: BackendParams): Promise<Capability[]>;
@@ -129,7 +130,7 @@ export class API extends APIClient implements IAPI {
     params: BackendParams,
   ): Promise<Product> => {
     const url = `${
-      this.baseEndpoint(params.rdm.getConnection())
+      this.baseEndpoint(params.ctx.getConnection())
     }/products/${schema.id}`;
 
     const response = await this.get(url, params);
@@ -140,7 +141,7 @@ export class API extends APIClient implements IAPI {
     schema: GetProductsPathParamsSchema,
     params: BackendParams,
   ): Promise<Array<Product>> => {
-    let url = `${this.baseEndpoint(params.rdm.getConnection())}/products`;
+    let url = `${this.baseEndpoint(params.ctx.getConnection())}/products`;
     if (schema.currency) {
       url += `?currency=${schema.currency}`;
     }
@@ -160,7 +161,7 @@ export class API extends APIClient implements IAPI {
     schema: AvailabilityBodySchema,
     params: BackendParams,
   ): Promise<Array<Availability>> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/availability`;
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/availability`;
     const headers = { "Accept-Language": params.locale ?? "" };
 
     const response = await this.post(url, {
@@ -178,7 +179,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Array<AvailabilityCalendar>> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/availability/calendar`;
     const headers = {
@@ -197,7 +198,7 @@ export class API extends APIClient implements IAPI {
     schema: CreateBookingSchema,
     params: BackendParams,
   ): Promise<Booking> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/bookings`;
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/bookings`;
     const response = await this.post(url, {
       body: schema,
       ...params,
@@ -211,7 +212,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Booking> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/bookings/${uuid}`;
     const body = { ...schema };
@@ -227,7 +228,7 @@ export class API extends APIClient implements IAPI {
     params: BackendParams,
   ): Promise<Booking> => {
     const url = `${
-      this.baseEndpoint(params.rdm.getConnection())
+      this.baseEndpoint(params.ctx.getConnection())
     }/bookings/${schema.uuid}`;
 
     const response = await this.get(url, params);
@@ -239,7 +240,7 @@ export class API extends APIClient implements IAPI {
     schema: GetBookingsQueryParamsSchema,
     params: BackendParams,
   ): Promise<Array<Booking>> => {
-    let url = `${this.baseEndpoint(params.rdm.getConnection())}/bookings`;
+    let url = `${this.baseEndpoint(params.ctx.getConnection())}/bookings`;
     const hasParams = Object.values(schema).length > 0;
     if (hasParams) {
       url += `?${qs.stringify(schema)}`;
@@ -256,7 +257,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Booking> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/bookings/${uuid}/confirm`;
 
@@ -276,7 +277,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Booking> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/bookings/${uuid}/extend`;
 
@@ -296,7 +297,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Booking> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/bookings/${uuid}/cancel`;
     const body = { ...schema };
@@ -314,7 +315,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<Booking> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/bookings/${uuid}`;
     const body = { ...schema };
@@ -329,8 +330,8 @@ export class API extends APIClient implements IAPI {
   public createOrder = async (
     schema: CreateOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/orders`;
+  ): Promise<Order> => {
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/orders`;
     const response = await this.post(url, {
       body: schema,
       ...params,
@@ -341,8 +342,8 @@ export class API extends APIClient implements IAPI {
   public updateOrder = async (
     { id, ...schema }: UpdateOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/orders/${id}`;
+  ): Promise<Order> => {
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/orders/${id}`;
     const response = await this.patch(url, {
       body: { ...schema },
       ...params,
@@ -353,9 +354,9 @@ export class API extends APIClient implements IAPI {
   public getOrder = async (
     schema: GetOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
+  ): Promise<Order> => {
     const url = `${
-      this.baseEndpoint(params.rdm.getConnection())
+      this.baseEndpoint(params.ctx.getConnection())
     }/orders/${schema.id}`;
 
     const response = await this.get(url, params);
@@ -366,10 +367,10 @@ export class API extends APIClient implements IAPI {
   public confirmOrder = async (
     { id, ...schema }: ConfirmOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
+  ): Promise<Order> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/orders/${id}/confirm`;
     const response = await this.post(url, {
@@ -383,10 +384,10 @@ export class API extends APIClient implements IAPI {
   public extendOrder = async (
     { id, ...schema }: ExtendOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
+  ): Promise<Order> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/orders/${id}/extend`;
 
@@ -401,10 +402,10 @@ export class API extends APIClient implements IAPI {
   public cancelOrder = async (
     { id, ...schema }: CancelOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
+  ): Promise<Order> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/orders/${id}/cancel`;
 
@@ -418,8 +419,8 @@ export class API extends APIClient implements IAPI {
   public deleteOrder = async (
     { id, ...schema }: CancelOrderSchema,
     params: BackendParams,
-  ): Promise<unknown> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/orders/${id}`;
+  ): Promise<Order> => {
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/orders/${id}`;
 
     const response = await this.delete(url, {
       body: { ...schema },
@@ -429,9 +430,9 @@ export class API extends APIClient implements IAPI {
   };
 
   public getSupplier = async (params: BackendParams): Promise<Supplier> => {
-    const backend = params.rdm.getConnection().backend as OctoBackend;
+    const backend = params.ctx.getConnection().backend as OctoBackend;
     const url = `${
-      this.baseEndpoint(params.rdm.getConnection())
+      this.baseEndpoint(params.ctx.getConnection())
     }/suppliers/${backend.supplierId}`;
 
     const response = await this.get(url, params);
@@ -439,7 +440,7 @@ export class API extends APIClient implements IAPI {
   };
 
   public getGateway = async (params: BackendParams): Promise<unknown> => {
-    const backend = params.rdm.getConnection().backend as OctoBackend;
+    const backend = params.ctx.getConnection().backend as OctoBackend;
     const url = `${backend.endpoint}/gateway`;
 
     const response = await this.get(url, params);
@@ -447,10 +448,10 @@ export class API extends APIClient implements IAPI {
   };
 
   public createWebhook = async (
-    schema: CreateWebhookSchema,
+    schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
   ): Promise<Webhook> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/webhooks`;
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/webhooks`;
 
     const body = {
       url: schema.url,
@@ -458,8 +459,8 @@ export class API extends APIClient implements IAPI {
       retry_on_error: true,
     };
 
-    if (schema.retry_on_error !== undefined) {
-      body.retry_on_error = schema.retry_on_error;
+    if (schema.retryOnError !== undefined) {
+      body.retry_on_error = schema.retryOnError;
     }
 
     const response = await this.post(url, {
@@ -470,7 +471,7 @@ export class API extends APIClient implements IAPI {
   };
 
   public listWebhooks = async (params: BackendParams): Promise<Array<Webhook>> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/webhooks`;
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/webhooks`;
 
     const response = await this.get(url, params);
 
@@ -478,11 +479,11 @@ export class API extends APIClient implements IAPI {
   };
 
   public deleteWebhook = async (
-    schema: DeleteWebhookSchema,
+    schema: DeleteWebhookPathParamsSchema,
     params: BackendParams,
   ): Promise<void> => {
     const url = `${
-      this.baseEndpoint(params.rdm.getConnection())
+      this.baseEndpoint(params.ctx.getConnection())
     }/webhooks/${schema.id}`;
 
     await this.delete(url, {
@@ -494,7 +495,7 @@ export class API extends APIClient implements IAPI {
     schema: UpdateMappingsSchema,
     params: BackendParams,
   ): Promise<void> => {
-    const url = `${this.baseEndpoint(params.rdm.getConnection())}/mappings`;
+    const url = `${this.baseEndpoint(params.ctx.getConnection())}/mappings`;
 
     const body = schema;
 
@@ -505,7 +506,7 @@ export class API extends APIClient implements IAPI {
   };
 
   public getMappings = async (schema: GetMappingsSchema, params: BackendParams): Promise<Array<Mapping>> => {
-    let url = `${this.baseEndpoint(params.rdm.getConnection())}/mappings`;
+    let url = `${this.baseEndpoint(params.ctx.getConnection())}/mappings`;
     const hasParams = Object.values(schema).length > 0;
     if (hasParams) {
       url += `?${qs.stringify(schema)}`;
@@ -522,7 +523,7 @@ export class API extends APIClient implements IAPI {
   ): Promise<unknown> => {
     const url = `${
       this.baseEndpoint(
-        params.rdm.getConnection(),
+        params.ctx.getConnection(),
       )
     }/checkin/lookup`;
     const body = schema;
@@ -537,7 +538,7 @@ export class API extends APIClient implements IAPI {
   public getCapabilities = async (
     params: BackendParams,
   ): Promise<Array<Capability>> => {
-    const backend = params.rdm.getConnection().backend as OctoBackend;
+    const backend = params.ctx.getConnection().backend as OctoBackend;
     const url = `${backend.endpoint}/capabilities`;
 
     const response = await this.get(url, params);
