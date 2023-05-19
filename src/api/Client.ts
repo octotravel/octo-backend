@@ -103,10 +103,10 @@ export abstract class APIClient {
     params: ApiClientParams,
   ): Promise<Request> => {
     const env = this.config.isProduction ? "live" : "test";
-    const backend = params.ctx.getConnection().backend as OctoBackend;
+    const connection = params.ctx.getConnection()
     const headersInit = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${backend.apiKey}`,
+      Authorization: `Bearer ${connection.apiKey}`,
       "Octo-Capabilities": this.mapCapabilities(params),
       "Octo-Env": env,
     };
