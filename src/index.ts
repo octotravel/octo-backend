@@ -169,6 +169,9 @@ class OctoBackend implements Backend {
 
   public getSupplier = (params: BackendParams): Promise<Supplier> =>
     this.supplierService.getSupplier(params);
+  
+  public getSuppliers = (params: BackendParams): Promise<Array<Supplier>> =>
+    this.supplierService.getSuppliers(params);
 
   public createWebhook = (
     schema: CreateWebhookBodyParamsSchema,

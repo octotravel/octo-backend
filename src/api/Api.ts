@@ -89,6 +89,7 @@ export interface IAPI {
     params: BackendParams,
   ): Promise<Booking[]>;
   getSupplier(params: BackendParams): Promise<Supplier>;
+  getSuppliers(params: BackendParams): Promise<Array<Supplier>>;
   createWebhook(
     schema: CreateWebhookBodyParamsSchema,
     params: BackendParams,
@@ -412,6 +413,14 @@ export class API extends APIClient implements IAPI {
     const url = `${
       connection.endpoint
     }/suppliers/${connection.supplierId}`;
+
+    const response = await this.get(url, params);
+    return response.json();
+  };
+
+  public getSuppliers = async (params: BackendParams): Promise<Array<Supplier>> => {
+    const connection = params.ctx.getConnection()
+    const url = `${connection.endpoint}/suppliers`;
 
     const response = await this.get(url, params);
     return response.json();
