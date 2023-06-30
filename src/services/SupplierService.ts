@@ -7,6 +7,7 @@ import type { IAPI } from "../api/Api";
 
 export interface ISupplierService {
   getSupplier(params: BackendParams): Promise<Supplier>;
+  getSuppliers(params: BackendParams): Promise<Array<Supplier>>;
 }
 
 @singleton()
@@ -17,4 +18,7 @@ export class SupplierService implements ISupplierService {
 
   public getSupplier = (params: BackendParams): Promise<Supplier> =>
     this.api.getSupplier(params);
+
+  public getSuppliers = (params: BackendParams): Promise<Array<Supplier>> =>
+    this.api.getSuppliers(params);
 }
