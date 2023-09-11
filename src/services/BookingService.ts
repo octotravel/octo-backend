@@ -8,6 +8,7 @@ import { BackendParams, CancelBookingSchema,
   ExtendBookingSchema,
   GetBookingSchema,
   GetBookingsSchema,
+  OctoBadRequestError,
   UpdateBookingSchema, } from '@octocloud/core';
 import type { IAPI } from "../api/Api";
 
@@ -61,10 +62,20 @@ export class BookingService implements IBookingService {
     params: BackendParams,
   ): Promise<Booking> => this.api.getBooking(schema, params);
 
-  public confirmBooking = (
+  public confirmBooking = async (
     schema: ConfirmBookingSchema,
     params: BackendParams,
-  ): Promise<Booking> => this.api.confirmBooking(schema, params);
+  ): Promise<Booking> => {
+    try {
+      const booking = await this.api.confirmBooking(schema, params)
+      return booking;
+    } catch (err) {
+      if (err instanceof OctoBadRequestError && err.message === 'Order already confirmed') {
+        return await this.api.getBooking({ uuid: schema.uuid }, params)
+      }
+      throw err;
+    }
+  }
 
   public cancelBooking = (
     schema: CancelBookingSchema,
