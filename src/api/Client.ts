@@ -109,6 +109,7 @@ export abstract class APIClient {
       Authorization: `Bearer ${connection.apiKey}`,
       "Octo-Capabilities": this.mapCapabilities(params),
       "Octo-Env": env,
+      "Ventrata-Parent-Request-ID": params.ctx.getRequestId(),
     };
 
     const headers: {[key:string]: string} = params.headers
