@@ -37,6 +37,7 @@ import {
   GetMappingsSchema,
   BackendParams,
   BaseConfig,
+  Logger,
 } from "@octocloud/core";
 
 import { CheckInService } from "./services/CheckinService";
@@ -50,13 +51,15 @@ import { AvailabilityService } from "./services/AvailabilityService";
 import { ProductService } from "./services/ProductService";
 import { CapabilityService } from "./services/CapabilityService";
 import { octoContainer } from "./di";
+import { ConsoleLogger } from './models/ConsoleLogger';
 
 
 export type BeforeRequest = ({request}: {request: Request}) => Promise<Request>
 
 interface BackendContainerData {
-  beforeRequest?: BeforeRequest
   config: BaseConfig
+  logger?: Logger,
+  beforeRequest?: BeforeRequest
 }
 
 const noopBeforeRequest: BeforeRequest = ({request}) => {
@@ -67,9 +70,10 @@ export class BackendContainer {
   private _backend: OctoBackend;
 
   constructor(data: BackendContainerData) {
-    const { beforeRequest, config } = data
-    octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest });
+    const { config, logger, beforeRequest } = data
     octoContainer.register('Config', { useValue: config });
+    octoContainer.register('Logger', { useValue: logger ?? new ConsoleLogger() });
+    octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest });
     this._backend = octoContainer.resolve(OctoBackend);
   }
 

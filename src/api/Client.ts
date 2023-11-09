@@ -3,7 +3,8 @@ import {
   OctoBackend,
   BaseConfig,
   SubRequestContext,
-  BackendParams
+  BackendParams,
+  Logger
 } from "@octocloud/core";
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from "./ErrorHandler";
@@ -27,7 +28,11 @@ export enum RequestMethod {
 export abstract class APIClient {
   private errorHandler = new OctoApiErrorHandler();
 
-  constructor(private beforeRequest: BeforeRequest, private config: BaseConfig) {}
+  constructor(
+    private beforeRequest: BeforeRequest,
+    private config: BaseConfig,
+    private logger: Logger,
+    ) {}
 
   protected get = (url: string, params: ApiClientParams): Promise<Response> => {
     return this.fetch(url, RequestMethod.Get, params);
@@ -64,7 +69,8 @@ export abstract class APIClient {
     params: ApiClientParams,
     retryAttempt = 0,
   ): Promise<Response> => {
-    console.log(new Date().toISOString(), method, url);
+    this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
+
     const subRequestContext = new SubRequestContext();
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });

@@ -39,6 +39,7 @@ import {
   LookupSchema,
   GetMappingsSchema,
   BaseConfig,
+  Logger,
 } from "@octocloud/core";
 import { APIClient } from "./Client";
 
@@ -116,10 +117,12 @@ export interface IAPI {
 @singleton()
 export class API extends APIClient implements IAPI {
 
-  constructor(@inject("BeforeRequest") beforeRequest: BeforeRequest,
-  @inject("Config") config: BaseConfig
+  constructor(
+    @inject("BeforeRequest") beforeRequest: BeforeRequest,
+    @inject("Config") config: BaseConfig,
+    @inject("Logger") logger: Logger,
   ) {
-    super(beforeRequest, config)
+    super(beforeRequest, config, logger)
   }
 
   public getProduct = async (
