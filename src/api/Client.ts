@@ -83,7 +83,7 @@ export abstract class APIClient {
     const res = await fetch(req);
 
     const requestData = subRequestContext.getRequestData(res);
-    params.ctx.addSubrequest(requestData.clone());
+    params.ctx.addSubrequest(requestData);
 
     const { shouldRetry } = await this.errorHandler.handleError(
       requestData,

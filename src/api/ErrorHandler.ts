@@ -26,7 +26,6 @@ import {
   OctoUnprocessableEntityError,
   UNAUTHORIZED,
   UNPROCESSABLE_ENTITY,
-  BaseConfig
 } from "@octocloud/core";
 
 type OctoApiErrorHandlerOutput = {
@@ -41,10 +40,10 @@ export class OctoApiErrorHandler {
     subRequestId: string,
     retryAttempt: number,
   ): Promise<OctoApiErrorHandlerOutput> => {
-    const response = requestData.response.clone();
-    const status = response.status;
+    const status = requestData.response.status;
 
     if (status < 200 || status >= 400) {
+      const response = requestData.response.clone();
       const canRetry = retryAttempt < 2;
       let body: any;
       try {
@@ -82,7 +81,7 @@ export class OctoApiErrorHandler {
       throw error;
     }
     return {
-      requestData: requestData.clone(),
+      requestData,
       shouldRetry: false,
     };
   };
