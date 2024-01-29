@@ -1,69 +1,53 @@
 import { v5 } from 'uuid';
-import {
-  OctoBackend,
-  BaseConfig,
-  SubRequestContext,
-  BackendParams,
-  Logger
-} from "@octocloud/core";
+import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger } from '@octocloud/core';
 import { BeforeRequest } from './../index';
-import { OctoApiErrorHandler } from "./ErrorHandler";
-
+import { OctoApiErrorHandler } from './ErrorHandler';
 
 interface ApiClientParams extends BackendParams {
-  body?: { [key: string]: any } | Array<any>;
+  body?: Record<string, any> | any[];
   headers?: HeadersInit;
-};
+}
 
 export enum RequestMethod {
-  Get = "GET",
-  Post = "POST",
-  Put = "PUT",
-  Patch = "PATCH",
-  Delete = "DELETE",
-  Head = "HEAD",
-  Options = "OPTIONS",
+  Get = 'GET',
+  Post = 'POST',
+  Put = 'PUT',
+  Patch = 'PATCH',
+  Delete = 'DELETE',
+  Head = 'HEAD',
+  Options = 'OPTIONS',
 }
 
 export abstract class APIClient {
-  private errorHandler = new OctoApiErrorHandler();
+  private readonly errorHandler = new OctoApiErrorHandler();
 
-  constructor(
-    private beforeRequest: BeforeRequest,
-    private config: BaseConfig,
-    private logger: Logger,
-    ) {}
+  public constructor(
+    private readonly beforeRequest: BeforeRequest,
+    private readonly config: BaseConfig,
+    private readonly logger: Logger,
+  ) {}
 
-  protected get = (url: string, params: ApiClientParams): Promise<Response> => {
-    return this.fetch(url, RequestMethod.Get, params);
+  protected get = async (url: string, params: ApiClientParams): Promise<Response> => {
+    return await this.fetch(url, RequestMethod.Get, params);
   };
 
-  protected post = (
-    url: string,
-    params: ApiClientParams,
-  ): Promise<Response> => {
-    return this.fetch(url, RequestMethod.Post, params);
+  protected post = async (url: string, params: ApiClientParams): Promise<Response> => {
+    return await this.fetch(url, RequestMethod.Post, params);
   };
 
-  protected put = (url: string, params: ApiClientParams): Promise<Response> => {
-    return this.fetch(url, RequestMethod.Put, params);
+  protected put = async (url: string, params: ApiClientParams): Promise<Response> => {
+    return await this.fetch(url, RequestMethod.Put, params);
   };
 
-  protected delete = (
-    url: string,
-    params: ApiClientParams,
-  ): Promise<Response> => {
-    return this.fetch(url, RequestMethod.Delete, params);
+  protected delete = async (url: string, params: ApiClientParams): Promise<Response> => {
+    return await this.fetch(url, RequestMethod.Delete, params);
   };
 
-  protected patch = (
-    url: string,
-    params: ApiClientParams,
-  ): Promise<Response> => {
-    return this.fetch(url, RequestMethod.Patch, params);
+  protected patch = async (url: string, params: ApiClientParams): Promise<Response> => {
+    return await this.fetch(url, RequestMethod.Patch, params);
   };
 
-  private fetch = async (
+  private readonly fetch = async (
     url: string,
     method: RequestMethod,
     params: ApiClientParams,
@@ -94,33 +78,31 @@ export abstract class APIClient {
 
     if (shouldRetry) {
       await this.delay(Math.pow(3, retryAttempt + 1) * 1000);
-      return this.fetch(url, method, params, retryAttempt + 1);
+      return await this.fetch(url, method, params, retryAttempt + 1);
     }
     return res.clone();
   };
 
-  private delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  private async delay(ms: number): Promise<unknown> {
+    return await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  private createRequest = async (
+  private readonly createRequest = async (
     url: string,
     method: RequestMethod,
     params: ApiClientParams,
   ): Promise<Request> => {
-    const env = this.config.isProduction ? "live" : "test";
-    const connection = params.ctx.getConnection()
+    const env = this.config.isProduction ? 'live' : 'test';
+    const connection = params.ctx.getConnection();
     const headersInit = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${connection.apiKey}`,
-      "Octo-Capabilities": this.mapCapabilities(params),
-      "Octo-Env": env,
-      "Ventrata-Parent-Request-ID": params.ctx.getRequestId(),
+      'Octo-Capabilities': this.mapCapabilities(params),
+      'Octo-Env': env,
+      'Ventrata-Parent-Request-ID': params.ctx.getRequestId(),
     };
 
-    const headers: {[key:string]: string} = params.headers
-      ? Object.assign(headersInit, params?.headers)
-      : headersInit;
+    const headers: Record<string, string> = params.headers ? Object.assign(headersInit, params?.headers) : headersInit;
 
     const body = this.prepareBody(params.body);
 
@@ -145,38 +127,34 @@ export abstract class APIClient {
     }
 
     return new Request(url, {
-      body: body,
-      headers: headers,
-      method: method,
+      body,
+      headers,
+      method,
     });
   };
 
-  private prepareBody = (body?: Record<string, unknown> | Array<unknown>) => {
+  private readonly prepareBody = (body?: Record<string, unknown> | unknown[]): string | null => {
     if (body) {
       if (Array.isArray(body)) {
         return JSON.stringify(body);
       } else {
-        return JSON.stringify(
-          Object.fromEntries(
-            Object.entries(body).filter(([_, v]) => v != null),
-          ),
-        );
+        return JSON.stringify(Object.fromEntries(Object.entries(body).filter(([_, v]) => v != null)));
       }
     }
 
     return null;
   };
 
-  private mapCapabilities = (params: ApiClientParams): string => {
+  private readonly mapCapabilities = (params: ApiClientParams): string => {
     const request = params.ctx.getRequest();
-    const capabilitiesHeader = request.headers.get("Octo-Capabilities");
+    const capabilitiesHeader = request.headers.get('Octo-Capabilities');
     if (capabilitiesHeader) {
       return capabilitiesHeader;
     }
     const capabilities = params.capabilities ?? [];
     if (capabilities.length > 0) {
-      return capabilities.join(", ");
+      return capabilities.join(', ');
     }
-    return "";
+    return '';
   };
 }
