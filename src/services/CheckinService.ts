@@ -1,19 +1,17 @@
-import { inject, singleton } from "tsyringe"
+import { inject, singleton } from 'tsyringe';
 import { BackendParams, LookupSchema } from '@octocloud/core';
-import type { IAPI } from "../api/Api";
+import type { IAPI } from '../api/Api';
 
 export interface ICheckInService {
-  lookup(schema: LookupSchema, params: BackendParams): Promise<unknown>;
+  lookup: (schema: LookupSchema, params: BackendParams) => Promise<unknown>;
 }
 
 @singleton()
 export class CheckInService implements ICheckInService {
-  constructor(@inject("IAPI") private api: IAPI) {
+  public constructor(@inject('IAPI') private readonly api: IAPI) {
     this.api = api;
   }
 
-  public lookup = (
-    schema: LookupSchema,
-    params: BackendParams,
-  ): Promise<unknown> => this.api.lookup(schema, params);
+  public lookup = async (schema: LookupSchema, params: BackendParams): Promise<unknown> =>
+    await this.api.lookup(schema, params);
 }

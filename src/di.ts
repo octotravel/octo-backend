@@ -1,20 +1,20 @@
-import { container, Lifecycle } from "tsyringe";
-import { CapabilityService } from "./services/CapabilityService";
-import { CheckInService } from "./services/CheckinService";
-import { PaymentService } from "./services/PaymentService";
-import { OrderService } from "./services/OrderService";
-import { WebhookService } from "./services/WebhookService";
-import { SupplierService } from "./services/SupplierService";
-import { ProductService } from "./services/ProductService";
-import { MappingService } from "./services/MappingService";
-import { BookingService } from "./services/BookingService";
-import { AvailabilityService } from "./services/AvailabilityService";
-import { API } from "./api/Api";
+import { container, Lifecycle } from 'tsyringe';
+import { CapabilityService } from './services/CapabilityService';
+import { CheckInService } from './services/CheckinService';
+import { PaymentService } from './services/PaymentService';
+import { OrderService } from './services/OrderService';
+import { WebhookService } from './services/WebhookService';
+import { SupplierService } from './services/SupplierService';
+import { ProductService } from './services/ProductService';
+import { MappingService } from './services/MappingService';
+import { BookingService } from './services/BookingService';
+import { AvailabilityService } from './services/AvailabilityService';
+import { API } from './api/Api';
 
 export const octoContainer = container.createChildContainer();
 
 octoContainer.register(
-  "IAPI",
+  'IAPI',
   {
     useClass: API,
   },
@@ -24,7 +24,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IAvailabilityService",
+  'IAvailabilityService',
   {
     useClass: AvailabilityService,
   },
@@ -34,7 +34,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IBookingService",
+  'IBookingService',
   {
     useClass: BookingService,
   },
@@ -44,7 +44,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IMappingService",
+  'IMappingService',
   {
     useClass: MappingService,
   },
@@ -54,7 +54,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IProductService",
+  'IProductService',
   {
     useClass: ProductService,
   },
@@ -64,7 +64,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "ISupplierService",
+  'ISupplierService',
   {
     useClass: SupplierService,
   },
@@ -74,7 +74,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IWebhookService",
+  'IWebhookService',
   {
     useClass: WebhookService,
   },
@@ -84,7 +84,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IOrderService",
+  'IOrderService',
   {
     useClass: OrderService,
   },
@@ -94,7 +94,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "IPaymentService",
+  'IPaymentService',
   {
     useClass: PaymentService,
   },
@@ -104,7 +104,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "ICheckInService",
+  'ICheckInService',
   {
     useClass: CheckInService,
   },
@@ -114,7 +114,7 @@ octoContainer.register(
 );
 
 octoContainer.register(
-  "ICapabilityService",
+  'ICapabilityService',
   {
     useClass: CapabilityService,
   },

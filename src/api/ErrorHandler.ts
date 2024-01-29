@@ -26,12 +26,12 @@ import {
   OctoUnprocessableEntityError,
   UNAUTHORIZED,
   UNPROCESSABLE_ENTITY,
-} from "@octocloud/core";
+} from '@octocloud/core';
 
-type OctoApiErrorHandlerOutput = {
+interface OctoApiErrorHandlerOutput {
   requestData: IBaseRequestData;
   shouldRetry: boolean;
-};
+}
 
 export class OctoApiErrorHandler {
   public handleError = async (
@@ -65,7 +65,7 @@ export class OctoApiErrorHandler {
 
       const errorParams = {
         message: body?.errorMessage ?? response.statusText,
-        body: body,
+        body,
         error: body?.error ?? null,
         requestId: ctx.getRequestId(),
         subRequestId,
@@ -86,8 +86,8 @@ export class OctoApiErrorHandler {
     };
   };
 
-  private errorMapper = (
-    body: { [key: string]: string },
+  private readonly errorMapper = (
+    body: Record<string, string>,
     errorParams: HttpErrorParams,
     status: number,
   ): HttpError => {
@@ -105,10 +105,7 @@ export class OctoApiErrorHandler {
     }
     if (body.error === INVALID_AVAILABILITY_ID) {
       const availabilityId = body.availabilityId;
-      return new OctoInvalidAvailabilityIdError(
-        availabilityId,
-        body.errorMessage,
-      );
+      return new OctoInvalidAvailabilityIdError(availabilityId, body.errorMessage);
     }
     if (body.error === INVALID_BOOKING_UUID) {
       const uuid = body.uuid;

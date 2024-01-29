@@ -1,5 +1,5 @@
 import { connectionSchema, connectionPatchSchema } from './schemas/Connection';
-import { inject, singleton } from "tsyringe";
+import { inject, singleton } from 'tsyringe';
 import {
   Availability,
   AvailabilityBodySchema,
@@ -15,7 +15,7 @@ import {
   DeleteWebhookPathParamsSchema,
   Webhook,
   Order,
-} from "@octocloud/types";
+} from '@octocloud/types';
 import {
   CancelOrderSchema,
   ConfirmOrderSchema,
@@ -38,64 +38,62 @@ import {
   BackendParams,
   BaseConfig,
   Logger,
-} from "@octocloud/core";
+} from '@octocloud/core';
 
-import { CheckInService } from "./services/CheckinService";
-import { PaymentService } from "./services/PaymentService";
-import { OrderService } from "./services/OrderService";
-import { MappingService } from "./services/MappingService";
-import { WebhookService } from "./services/WebhookService";
-import { SupplierService } from "./services/SupplierService";
-import { BookingService } from "./services/BookingService";
-import { AvailabilityService } from "./services/AvailabilityService";
-import { ProductService } from "./services/ProductService";
-import { CapabilityService } from "./services/CapabilityService";
-import { octoContainer } from "./di";
+import { CheckInService } from './services/CheckinService';
+import { PaymentService } from './services/PaymentService';
+import { OrderService } from './services/OrderService';
+import { MappingService } from './services/MappingService';
+import { WebhookService } from './services/WebhookService';
+import { SupplierService } from './services/SupplierService';
+import { BookingService } from './services/BookingService';
+import { AvailabilityService } from './services/AvailabilityService';
+import { ProductService } from './services/ProductService';
+import { CapabilityService } from './services/CapabilityService';
+import { octoContainer } from './di';
 import { ConsoleLogger } from './models/ConsoleLogger';
 
-
-export type BeforeRequest = ({request}: {request: Request}) => Promise<Request>
+export type BeforeRequest = ({ request }: { request: Request }) => Promise<Request>;
 
 interface BackendContainerData {
-  config: BaseConfig
-  logger?: Logger,
-  beforeRequest?: BeforeRequest
+  config: BaseConfig;
+  logger?: Logger;
+  beforeRequest?: BeforeRequest;
 }
 
-const noopBeforeRequest: BeforeRequest = ({request}) => {
-  return Promise.resolve(request)
-}
+const noopBeforeRequest: BeforeRequest = async ({ request }) => {
+  return await Promise.resolve(request);
+};
 
 export class BackendContainer {
-  private _backend: OctoBackend;
+  private readonly _backend: OctoBackend;
 
-  constructor(data: BackendContainerData) {
-    const { config, logger, beforeRequest } = data
+  public constructor(data: BackendContainerData) {
+    const { config, logger, beforeRequest } = data;
     octoContainer.register('Config', { useValue: config });
     octoContainer.register('Logger', { useValue: logger ?? new ConsoleLogger() });
     octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest });
     this._backend = octoContainer.resolve(OctoBackend);
   }
 
-  public get backend () {
+  public get backend(): Backend {
     return this._backend;
   }
 }
 
 @singleton()
 class OctoBackend implements Backend {
-  constructor(
-    @inject("IProductService") private productService: ProductService,
-    @inject("IAvailabilityService") private availabilityService:
-      AvailabilityService,
-    @inject("IBookingService") private bookingService: BookingService,
-    @inject("ISupplierService") private supplierService: SupplierService,
-    @inject("IWebhookService") private webhookService: WebhookService,
-    @inject("IMappingService") private mappingService: MappingService,
-    @inject("IOrderService") private orderService: OrderService,
-    @inject("IPaymentService") private paymentService: PaymentService,
-    @inject("ICheckInService") private checkinService: CheckInService,
-    @inject("ICapabilityService") private capabilityService: CapabilityService,
+  public constructor(
+    @inject('IProductService') private readonly productService: ProductService,
+    @inject('IAvailabilityService') private readonly availabilityService: AvailabilityService,
+    @inject('IBookingService') private readonly bookingService: BookingService,
+    @inject('ISupplierService') private readonly supplierService: SupplierService,
+    @inject('IWebhookService') private readonly webhookService: WebhookService,
+    @inject('IMappingService') private readonly mappingService: MappingService,
+    @inject('IOrderService') private readonly orderService: OrderService,
+    @inject('IPaymentService') private readonly paymentService: PaymentService,
+    @inject('ICheckInService') private readonly checkinService: CheckInService,
+    @inject('ICapabilityService') private readonly capabilityService: CapabilityService,
   ) {
     this.productService = productService;
     this.availabilityService = availabilityService;
@@ -109,140 +107,95 @@ class OctoBackend implements Backend {
     this.capabilityService = capabilityService;
   }
 
-  public getProduct = (
-    schema: GetProductPathParamsSchema,
-    params: BackendParams,
-  ): Promise<Product> => this.productService.getProduct(schema, params);
+  public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> =>
+    await this.productService.getProduct(schema, params);
 
-  public getProducts = (
-    schema: GetProductsPathParamsSchema,
-    params: BackendParams,
-  ): Promise<Product[]> => this.productService.getProducts(schema, params);
+  public getProducts = async (schema: GetProductsPathParamsSchema, params: BackendParams): Promise<Product[]> =>
+    await this.productService.getProducts(schema, params);
 
-  public getAvailability = (
-    schema: AvailabilityBodySchema,
-    params: BackendParams,
-  ): Promise<Availability[]> =>
-    this.availabilityService.getAvailability(schema, params);
+  public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> =>
+    await this.availabilityService.getAvailability(schema, params);
 
-  public getAvailabilityCalendar = (
+  public getAvailabilityCalendar = async (
     schema: AvailabilityCalendarBodySchema,
     params: BackendParams,
-  ): Promise<AvailabilityCalendar[]> =>
-    this.availabilityService.getAvailabilityCalendar(schema, params);
+  ): Promise<AvailabilityCalendar[]> => await this.availabilityService.getAvailabilityCalendar(schema, params);
 
-  public createBooking = (
-    schema: CreateBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.createBooking(schema, params);
+  public createBooking = async (schema: CreateBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.createBooking(schema, params);
 
-  public updateBooking = (
-    schema: UpdateBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.updateBooking(schema, params);
+  public updateBooking = async (schema: UpdateBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.updateBooking(schema, params);
 
-  public getBooking = (
-    schema: GetBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.getBooking(schema, params);
+  public getBooking = async (schema: GetBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.getBooking(schema, params);
 
-  public confirmBooking = (
-    schema: ConfirmBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.confirmBooking(schema, params);
+  public confirmBooking = async (schema: ConfirmBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.confirmBooking(schema, params);
 
-  public cancelBooking = (
-    schema: CancelBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.cancelBooking(schema, params);
+  public cancelBooking = async (schema: CancelBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.cancelBooking(schema, params);
 
-  public deleteBooking = (
-    schema: CancelBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.deleteBooking(schema, params);
+  public deleteBooking = async (schema: CancelBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.deleteBooking(schema, params);
 
-  public extendBooking = (
-    schema: ExtendBookingSchema,
-    params: BackendParams,
-  ): Promise<Booking> => this.bookingService.extendBooking(schema, params);
+  public extendBooking = async (schema: ExtendBookingSchema, params: BackendParams): Promise<Booking> =>
+    await this.bookingService.extendBooking(schema, params);
 
-  public getBookings = (
-    schema: GetBookingsSchema,
-    params: BackendParams,
-  ): Promise<Booking[]> => this.bookingService.getBookings(schema, params);
+  public getBookings = async (schema: GetBookingsSchema, params: BackendParams): Promise<Booking[]> =>
+    await this.bookingService.getBookings(schema, params);
 
-  public getSupplier = (params: BackendParams): Promise<Supplier> =>
-    this.supplierService.getSupplier(params);
-  
-  public getSuppliers = (params: BackendParams): Promise<Array<Supplier>> =>
-    this.supplierService.getSuppliers(params);
+  public getSupplier = async (params: BackendParams): Promise<Supplier> =>
+    await this.supplierService.getSupplier(params);
 
-  public createWebhook = (
-    schema: CreateWebhookBodyParamsSchema,
-    params: BackendParams,
-  ): Promise<Webhook> => this.webhookService.createWebhook(schema, params);
+  public getSuppliers = async (params: BackendParams): Promise<Supplier[]> =>
+    await this.supplierService.getSuppliers(params);
 
-  public deleteWebhook = (
-    schema: DeleteWebhookPathParamsSchema,
-    params: BackendParams,
-  ): Promise<void> => this.webhookService.deleteWebhook(schema, params);
+  public createWebhook = async (schema: CreateWebhookBodyParamsSchema, params: BackendParams): Promise<Webhook> =>
+    await this.webhookService.createWebhook(schema, params);
 
-  public listWebhooks = (params: BackendParams): Promise<Webhook[]> =>
-    this.webhookService.listWebhooks(params);
+  public deleteWebhook = async (schema: DeleteWebhookPathParamsSchema, params: BackendParams): Promise<void> => {
+    await this.webhookService.deleteWebhook(schema, params);
+  };
 
-  public updateMappings = (
-    schema: UpdateMappingsSchema,
-    params: BackendParams,
-  ): Promise<void> => this.mappingService.updateMappings(schema, params);
+  public listWebhooks = async (params: BackendParams): Promise<Webhook[]> =>
+    await this.webhookService.listWebhooks(params);
 
-  public getMappings = (schema: GetMappingsSchema, params: BackendParams): Promise<Mapping[]> =>
-    this.mappingService.getMappings(schema, params);
+  public updateMappings = async (schema: UpdateMappingsSchema, params: BackendParams): Promise<void> => {
+    await this.mappingService.updateMappings(schema, params);
+  };
 
-  public createOrder = (
-    schema: CreateOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.createOrder(schema, params);
+  public getMappings = async (schema: GetMappingsSchema, params: BackendParams): Promise<Mapping[]> =>
+    await this.mappingService.getMappings(schema, params);
 
-  public updateOrder = (
-    schema: UpdateOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.updateOrder(schema, params);
+  public createOrder = async (schema: CreateOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.createOrder(schema, params);
 
-  public getOrder = (
-    schema: GetOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.getOrder(schema, params);
+  public updateOrder = async (schema: UpdateOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.updateOrder(schema, params);
 
-  public confirmOrder = (
-    schema: ConfirmOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.confirmOrder(schema, params);
+  public getOrder = async (schema: GetOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.getOrder(schema, params);
 
-  public cancelOrder = (
-    schema: CancelOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.cancelOrder(schema, params);
+  public confirmOrder = async (schema: ConfirmOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.confirmOrder(schema, params);
 
-  public deleteOrder = (
-    schema: CancelOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.deleteOrder(schema, params);
+  public cancelOrder = async (schema: CancelOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.cancelOrder(schema, params);
 
-  public extendOrder = (
-    schema: ExtendOrderSchema,
-    params: BackendParams,
-  ): Promise<Order> => this.orderService.extendOrder(schema, params);
+  public deleteOrder = async (schema: CancelOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.deleteOrder(schema, params);
 
-  public getGateway = (params: BackendParams): Promise<unknown> =>
-    this.paymentService.getGateway(params);
+  public extendOrder = async (schema: ExtendOrderSchema, params: BackendParams): Promise<Order> =>
+    await this.orderService.extendOrder(schema, params);
 
-  public lookup = (
-    schema: LookupSchema,
-    params: BackendParams,
-  ): Promise<unknown> => this.checkinService.lookup(schema, params);
+  public getGateway = async (params: BackendParams): Promise<unknown> => await this.paymentService.getGateway(params);
 
-  public getCapabilities = (params: BackendParams): Promise<Capability[]> =>
-    this.capabilityService.getCapabilities(params);
+  public lookup = async (schema: LookupSchema, params: BackendParams): Promise<unknown> =>
+    await this.checkinService.lookup(schema, params);
+
+  public getCapabilities = async (params: BackendParams): Promise<Capability[]> =>
+    await this.capabilityService.getCapabilities(params);
 
   /**
    *
@@ -253,7 +206,7 @@ class OctoBackend implements Backend {
   public validateConnectionSchema = <OctoConnectionBackend>(data: unknown): OctoConnectionBackend => {
     connectionSchema.validateSync(data);
     return connectionSchema.cast(data) as OctoConnectionBackend;
-  }
+  };
 
   /**
    *
@@ -264,5 +217,5 @@ class OctoBackend implements Backend {
   public validateConnectionPatchSchema = <OctoConnectionPatchBackend>(data: unknown): OctoConnectionPatchBackend => {
     connectionPatchSchema.validateSync(data);
     return connectionPatchSchema.cast(data) as OctoConnectionPatchBackend;
-  }
+  };
 }
