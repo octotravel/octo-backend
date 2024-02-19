@@ -6,7 +6,7 @@ import {
   AvailabilityCalendarBodySchema,
 } from '@octocloud/types';
 
-import { BackendParams } from '@octocloud/core';
+import { BackendParams, AvailabilityHelper } from '@octocloud/core';
 import type { IAPI } from '../api/Api';
 
 export interface IAvailabilityService {
@@ -23,8 +23,10 @@ export class AvailabilityService implements IAvailabilityService {
     this.api = api;
   }
 
-  public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> =>
-    await this.api.getAvailability(schema, params);
+  public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> => {
+    const availabilities = await this.api.getAvailability(schema, params);
+    return AvailabilityHelper.updateWithFiltereredFirstUnitPricing(availabilities);
+  };
 
   public getAvailabilityCalendar = async (
     schema: AvailabilityCalendarBodySchema,
