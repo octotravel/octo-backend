@@ -26,7 +26,7 @@ export class AvailabilityService implements IAvailabilityService {
   public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> => {
     const availabilities = await this.api.getAvailability(schema, params);
     return AvailabilityHelper.updateWithFiltereredFirstUnitPricing(availabilities);
-  }
+  };
 
   public getAvailabilityCalendar = async (
     schema: AvailabilityCalendarBodySchema,
