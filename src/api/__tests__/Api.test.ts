@@ -44,7 +44,7 @@ describe('API', () => {
   });
 
   describe('fetch', () => {
-    it('should succeed', async () => {
+    it('should succeed at first try', async () => {
       global.fetch = vi.fn().mockReturnValueOnce(Promise.resolve(new Response('', { status: 200 })));
       await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
         ctx: requestContext,
