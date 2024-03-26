@@ -47,7 +47,7 @@ export abstract class APIClient {
     return await this.fetch(url, RequestMethod.Patch, params);
   };
 
-  private readonly fetch = async (
+  public readonly fetch = async (
     url: string,
     method: RequestMethod,
     params: ApiClientParams,
@@ -97,7 +97,9 @@ export abstract class APIClient {
     const headersInit = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${connection.apiKey}`,
+
       'Octo-Capabilities': this.mapCapabilities(params),
+
       'Octo-Env': env,
       'Ventrata-Parent-Request-ID': params.ctx.getRequestId(),
     };
