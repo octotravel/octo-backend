@@ -67,21 +67,26 @@ export abstract class APIClient {
     const res = await fetch(req);
 
     const requestData = subRequestContext.getRequestData(res);
-    const { shouldRetry } = await this.errorHandler.handleError(
-      requestData,
-      params.ctx,
-      subRequestContext.getSubRequestId(),
-      retryAttempt,
-    );
-    if (shouldRetry) {
-      requestData.isRetry = true;
+    try {
+      const { shouldRetry } = await this.errorHandler.handleError(
+        requestData,
+        params.ctx,
+        subRequestContext.getSubRequestId(),
+        retryAttempt,
+      );
+      if (shouldRetry) {
+        requestData.isRetry = true;
+      }
+      params.ctx.addSubrequest(requestData);
+      if (shouldRetry) {
+        await this.delay(Math.pow(3, retryAttempt + 1) * 1000);
+        return await this.fetch(url, method, params, retryAttempt + 1);
+      }
+      return res.clone();
+    } catch (err) {
+      params.ctx.addSubrequest(requestData);
+      throw err;
     }
-    params.ctx.addSubrequest(requestData);
-    if (shouldRetry) {
-      await this.delay(Math.pow(3, retryAttempt + 1) * 1000);
-      return await this.fetch(url, method, params, retryAttempt + 1);
-    }
-    return res.clone();
   };
 
   private async delay(ms: number): Promise<unknown> {
