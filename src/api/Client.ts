@@ -50,33 +50,19 @@ export abstract class APIClient {
   public readonly fetch = async (url: string, method: RequestMethod, params: ApiClientParams): Promise<Response> => {
     this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
 
-    const subRequestContext = new SubRequestContext();
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
-    subRequestContext.initRequestData({
-      request: req.clone(),
-      requestId: params.ctx.getRequestId(),
-      accountId: params.ctx.getAccountId(),
-    });
 
-    const res = await fetchRetry(req);
+    const res = await fetchRetry(req, undefined, { params });
 
-    const requestData = subRequestContext.getRequestData(res);
-    params.ctx.addSubrequest(requestData);
+    if (res.status < 200 || res.status >= 400) {
+      await this.errorHandler.handleError(res, params.ctx);
 
-    const { shouldRetry } = await this.errorHandler.handleError(
-      requestData,
-      params.ctx,
-      subRequestContext.getSubRequestId(),
-      retryAttempt,
-    );
+      return res.clone();
+    }
 
-    return res.clone();
+    return res;
   };
-
-  private async delay(ms: number): Promise<unknown> {
-    return await new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   private readonly createRequest = async (
     url: string,
@@ -88,9 +74,7 @@ export abstract class APIClient {
     const headersInit = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${connection.apiKey}`,
-
       'Octo-Capabilities': this.mapCapabilities(params),
-
       'Octo-Env': env,
       'Ventrata-Parent-Request-ID': params.ctx.getRequestId(),
     };

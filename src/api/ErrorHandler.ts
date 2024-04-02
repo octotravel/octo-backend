@@ -1,8 +1,5 @@
 import {
-  BaseConnection,
   RequestContext,
-  IBaseRequestData,
-  SubRequestData,
   HttpError,
   HttpErrorParams,
   BAD_REQUEST,
@@ -14,7 +11,6 @@ import {
   INVALID_PRODUCT_ID,
   INVALID_UNIT_ID,
   OctoBadRequestError,
-  OctoError,
   OctoForbiddenError,
   OctoInternalServerError,
   OctoInvalidAvailabilityIdError,
@@ -28,62 +24,28 @@ import {
   UNPROCESSABLE_ENTITY,
 } from '@octocloud/core';
 
-interface OctoApiErrorHandlerOutput {
-  requestData: IBaseRequestData;
-  shouldRetry: boolean;
-}
-
 export class OctoApiErrorHandler {
-  public handleError = async (
-    requestData: SubRequestData,
-    ctx: RequestContext,
-    subRequestId: string,
-    retryAttempt: number,
-  ): Promise<OctoApiErrorHandlerOutput> => {
-    const status = requestData.response.status;
+  public handleError = async (response: Response, ctx: RequestContext): Promise<void> => {
+    const status = response.status;
+    let body: any;
 
-    if (status < 200 || status >= 400) {
-      const response = requestData.response.clone();
-      const canRetry = retryAttempt < 2;
-      let body: any;
-      try {
-        body = await response.json();
-      } catch (err) {
-        ctx.enableAlert();
-        return {
-          requestData,
-          shouldRetry: canRetry,
-        };
-      }
-
-      if (status > 500 && status < 599 && canRetry) {
-        return {
-          requestData,
-          shouldRetry: canRetry,
-        };
-      }
-
-      const errorParams = {
-        message: body?.errorMessage ?? response.statusText,
-        body,
-        error: body?.error ?? null,
-        requestId: ctx.getRequestId(),
-        subRequestId,
-      };
-
-      const error = this.errorMapper(body, errorParams, status);
-
-      requestData.setError(error);
-      if (error instanceof OctoError) {
-        throw error;
-      }
-
-      throw error;
+    try {
+      body = await response.clone().json();
+    } catch (err) {
+      ctx.enableAlert();
+      return;
     }
-    return {
-      requestData,
-      shouldRetry: false,
+
+    const errorParams: HttpErrorParams = {
+      message: body?.errorMessage ?? response.statusText,
+      body,
+      error: body?.error ?? null,
+      requestId: ctx.getRequestId(),
+      subRequestId: ctx.getSubrequest()[-1].id ?? null,
     };
+
+    const error = this.errorMapper(body, errorParams, status);
+    throw error;
   };
 
   private readonly errorMapper = (
