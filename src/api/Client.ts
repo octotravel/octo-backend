@@ -1,5 +1,5 @@
 import { v5 } from 'uuid';
-import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger } from '@octocloud/core';
+import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
 
@@ -47,12 +47,7 @@ export abstract class APIClient {
     return await this.fetch(url, RequestMethod.Patch, params);
   };
 
-  public readonly fetch = async (
-    url: string,
-    method: RequestMethod,
-    params: ApiClientParams,
-    retryAttempt = 0,
-  ): Promise<Response> => {
+  public readonly fetch = async (url: string, method: RequestMethod, params: ApiClientParams): Promise<Response> => {
     this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
 
     const subRequestContext = new SubRequestContext();
@@ -64,7 +59,7 @@ export abstract class APIClient {
       accountId: params.ctx.getAccountId(),
     });
 
-    const res = await fetch(req);
+    const res = await fetchRetry(req);
 
     const requestData = subRequestContext.getRequestData(res);
     params.ctx.addSubrequest(requestData);
@@ -76,10 +71,6 @@ export abstract class APIClient {
       retryAttempt,
     );
 
-    if (shouldRetry) {
-      await this.delay(Math.pow(3, retryAttempt + 1) * 1000);
-      return await this.fetch(url, method, params, retryAttempt + 1);
-    }
     return res.clone();
   };
 
