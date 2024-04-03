@@ -1,6 +1,6 @@
 {
   "name": "@octocloud/backend",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "license": "ISC",
   "author": "",
   "exports": {
@@ -25,13 +25,13 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepare": "npm run build && husky install",
-    "test": "jest --passWithNoTests --verbose",
-    "test-coverage": "jest --passWithNoTests --coverage",
+    "test": "vitest run --config ./vitest.config.ts",
+    "test:coverage": "vitest run --config ./vitest.config.ts --coverage",
     "watch": "npm run build -- --watch src"
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@octocloud/core": "^1.0.48",
+    "@octocloud/core": "^1.0.49",
     "@octocloud/types": "^1.5.24",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^1.3.7",
@@ -43,10 +43,10 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/jest": "29.5.11",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
+    "@vitest/coverage-v8": "0.34.6",
     "esbuild": "^0.15.12",
     "eslint": "8.56.0",
     "eslint-config-airbnb-base": "15.0.0",
@@ -60,9 +60,11 @@
     "prettier": "3.1.1",
     "prettier-package-json": "2.8.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "29.1.2",
     "tsup": "^6.3.0",
-    "unbuild": "^0.9.4"
+    "unbuild": "^0.9.4",
+    "vite": "4.5.2",
+    "vitest": "0.34.6",
+    "vitest-mock-extended": "1.3.1"
   },
   "lint-staged": {
     "./package.json": "npm run format:package",
