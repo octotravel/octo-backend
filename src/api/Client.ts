@@ -63,7 +63,7 @@ export abstract class APIClient {
     params.ctx.addSubrequest(subRequestData);
 
     if (res.status < 200 || res.status >= 400) {
-      await this.errorHandler.handleError(res, params.ctx, subRequestData);
+      await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
 
     return res;

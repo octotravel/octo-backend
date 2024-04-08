@@ -26,11 +26,11 @@ import {
 } from '@octocloud/core';
 
 export class OctoApiErrorHandler {
-  public handleError = async (
+  public async handleError(
     response: Response,
-    requestContext: RequestContext,
     subRequestData: SubRequestData,
-  ): Promise<void> => {
+    requestContext: RequestContext,
+  ): Promise<void> {
     const status = response.status;
     let body: any;
 
