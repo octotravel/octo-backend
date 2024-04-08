@@ -49,8 +49,9 @@ describe('API', () => {
       await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
         ctx: requestContext,
       });
-      expect(requestContext.getSubrequest()[0].response.status).toBe(200);
-      expect(requestContext.getSubrequest().length).toBe(1);
+      const subrequest = requestContext.getSubrequests()[0];
+      expect(subrequest.response.status).toBe(200);
+      expect(subrequest.retries.length).toBe(0);
     });
 
     it('should succeed at second retry', async () => {
@@ -61,9 +62,10 @@ describe('API', () => {
       await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
         ctx: requestContext,
       });
-      expect(requestContext.getSubrequest()[0].response.status).toBe(503);
-      expect(requestContext.getSubrequest()[1].response.status).toBe(200);
-      expect(requestContext.getSubrequest().length).toBe(2);
+      const subrequest = requestContext.getSubrequests()[0];
+      expect(subrequest.response.status).toBe(503);
+      expect(subrequest.retries[0].response.status).toBe(200);
+      expect(subrequest.retries.length).toBe(1);
     });
 
     it('should succeed at third retry', async () => {
@@ -75,10 +77,11 @@ describe('API', () => {
       await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
         ctx: requestContext,
       });
-      expect(requestContext.getSubrequest()[0].response.status).toBe(503);
-      expect(requestContext.getSubrequest()[1].response.status).toBe(502);
-      expect(requestContext.getSubrequest()[2].response.status).toBe(200);
-      expect(requestContext.getSubrequest().length).toBe(3);
+      const subrequest = requestContext.getSubrequests()[0];
+      expect(subrequest.response.status).toBe(503);
+      expect(subrequest.retries[0].response.status).toBe(502);
+      expect(subrequest.retries[1].response.status).toBe(200);
+      expect(subrequest.retries.length).toBe(2);
     });
 
     it('should fail after three retries', async () => {
@@ -90,11 +93,11 @@ describe('API', () => {
       await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
         ctx: requestContext,
       });
-      const subrequests = requestContext.getSubrequest();
-      expect(subrequests[0].response.status).toBe(503);
-      expect(subrequests[1].response.status).toBe(502);
-      expect(subrequests[2].response.status).toBe(500);
-      expect(requestContext.getSubrequest().length).toBe(3);
+      const subrequest = requestContext.getSubrequests()[0];
+      expect(subrequest.response.status).toBe(503);
+      expect(subrequest.retries[0].response.status).toBe(502);
+      expect(subrequest.retries[1].response.status).toBe(500);
+      expect(subrequest.retries.length).toBe(2);
     });
   });
 });
