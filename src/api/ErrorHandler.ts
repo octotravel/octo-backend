@@ -51,7 +51,7 @@ export class OctoApiErrorHandler {
 
     const error = this.errorMapper(body, errorParams, status);
     throw error;
-  };
+  }
 
   private readonly errorMapper = (
     body: Record<string, string>,
