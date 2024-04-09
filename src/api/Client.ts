@@ -2,6 +2,7 @@ import { v5 } from 'uuid';
 import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
+import { customFetchRetry } from './customFetchRetry';
 
 interface ApiClientParams extends BackendParams {
   body?: Record<string, any> | any[];
@@ -60,7 +61,7 @@ export abstract class APIClient {
       accountId: params.ctx.getAccountId(),
     });
 
-    const res = await fetchRetry(req, undefined, { subRequestContext });
+    const res = await customFetchRetry(req, undefined, { subRequestContext });
     const subRequestData = subRequestContext.getRequestData();
     params.ctx.addSubrequest(subRequestData.clone());
 
