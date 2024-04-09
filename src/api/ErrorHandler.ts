@@ -22,17 +22,22 @@ import {
   OctoUnprocessableEntityError,
   UNAUTHORIZED,
   UNPROCESSABLE_ENTITY,
+  SubRequestData,
 } from '@octocloud/core';
 
 export class OctoApiErrorHandler {
-  public handleError = async (response: Response, ctx: RequestContext): Promise<void> => {
+  public async handleError(
+    response: Response,
+    subRequestData: SubRequestData,
+    requestContext: RequestContext,
+  ): Promise<void> {
     const status = response.status;
     let body: any;
 
     try {
       body = await response.clone().json();
     } catch (err) {
-      ctx.enableAlert();
+      requestContext.enableAlert();
       return;
     }
 
@@ -40,13 +45,13 @@ export class OctoApiErrorHandler {
       message: body?.errorMessage ?? response.statusText,
       body,
       error: body?.error ?? null,
-      requestId: ctx.getRequestId(),
-      subRequestId: ctx.getSubrequest()[-1].id ?? null,
+      requestId: requestContext.getRequestId(),
+      subRequestId: subRequestData.id,
     };
 
     const error = this.errorMapper(body, errorParams, status);
     throw error;
-  };
+  }
 
   private readonly errorMapper = (
     body: Record<string, string>,

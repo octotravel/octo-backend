@@ -52,13 +52,18 @@ export abstract class APIClient {
 
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
+    const subRequestContext = new SubRequestContext({
+      request: req,
+      requestId: params.ctx.getRequestId(),
+      accountId: params.ctx.getAccountId(),
+    });
 
-    const res = await fetchRetry(req, undefined, { params });
+    const res = await fetchRetry(req, undefined, { subRequestContext });
+    const subRequestData = subRequestContext.getRequestData();
+    params.ctx.addSubrequest(subRequestData);
 
     if (res.status < 200 || res.status >= 400) {
-      await this.errorHandler.handleError(res, params.ctx);
-
-      return res.clone();
+      await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
 
     return res;
