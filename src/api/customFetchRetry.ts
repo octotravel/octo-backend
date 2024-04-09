@@ -93,5 +93,5 @@ export async function customFetchRetry(
     throw error;
   }
 
-  return res;
+  return res.clone();
 }
