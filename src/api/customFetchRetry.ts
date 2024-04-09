@@ -100,5 +100,12 @@ export async function customFetchRetry(
     return res.clone();
   } catch (e) {
     console.log(e);
+    
+    const res = new Response(null, {
+        status: 500,
+        statusText: 'Cant get any response data, something went horrinly wrong.',
+      });
+
+    return res;
   }
 }
