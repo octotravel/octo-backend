@@ -48,6 +48,8 @@ export abstract class APIClient {
   };
 
   public readonly fetch = async (url: string, method: RequestMethod, params: ApiClientParams): Promise<Response> => {
+    console.log('wip test');
+    this.logger.log('wip test');
     this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
 
     const request = await this.createRequest(url, method, params);
