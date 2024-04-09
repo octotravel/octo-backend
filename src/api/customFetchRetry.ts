@@ -49,8 +49,8 @@ export async function customFetchRetry(
 
   try {
     res = await fetch(input, init);
-  } catch (e: unknown) {
-    res = new Response('{}', { status: 500, statusText: 'Cant get any response data, something went horrinly wrong.' });
+  } catch (e: any) {
+    res = new Response(e.message ?? '"Cant get any response data, something went horrinly wrong."', { status: 500 });
 
     if (e instanceof Error) {
       error = e;
