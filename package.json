@@ -1,6 +1,6 @@
 {
   "name": "@octocloud/backend",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "license": "ISC",
   "author": "",
   "exports": {
@@ -43,6 +43,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@octocloud/generators": "^1.0.6",
+    "@types/jest": "29.5.11",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
