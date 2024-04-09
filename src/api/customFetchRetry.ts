@@ -34,7 +34,7 @@ export async function customFetchRetry(
       const request: Request = input instanceof Request ? input : new Request(input, init);
 
       subRequestRetryContext = new SubRequestRetryContext({
-        request,
+        request: request.clone(),
         accountId: subRequestContext.getAccountId(),
         requestId: subRequestContext.getRequestId(),
         subRequestId: subRequestContext.getId(),
@@ -64,7 +64,7 @@ export async function customFetchRetry(
     subRequestRetryContext.setResponse(res);
     subRequestRetryContext.setError(error);
     const requestData = subRequestRetryContext.getRequestData();
-    subRequestContext.addRetry(requestData);
+    subRequestContext.addRetry(requestData.clone());
   }
 
   currentRetryAttempt++;
