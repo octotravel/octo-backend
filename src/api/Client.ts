@@ -53,7 +53,7 @@ export abstract class APIClient {
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
     const subRequestContext = new SubRequestContext({
-      request: req,
+      request: req.clone(),
       requestId: params.ctx.getRequestId(),
       accountId: params.ctx.getAccountId(),
     });
@@ -66,7 +66,7 @@ export abstract class APIClient {
       await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
 
-    return res;
+    return res.clone();
   };
 
   private readonly createRequest = async (
