@@ -33,6 +33,8 @@ export async function customFetchRetry(
     if (currentRetryAttempt > 0) {
       if (subRequestContext !== null) {
         const request: Request = input instanceof Request ? input : new Request(input, init);
+        console.log(input);
+        console.log(init);
 
         subRequestRetryContext = new SubRequestRetryContext({
           request: request.clone(),
