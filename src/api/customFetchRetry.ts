@@ -36,7 +36,15 @@ export async function customFetchRetry(
         console.log(input);
         console.log("init:");
         console.log(init);
-        const request: Request = input instanceof Request ? input : new Request(input, init);
+
+        let request: Request;
+
+        if (input instanceof Request) {
+            request = input;
+        } else {
+            console.log("input is not a Request");
+            request = new Request(input, init);
+        }
 
         subRequestRetryContext = new SubRequestRetryContext({
           request: request.clone(),
