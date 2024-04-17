@@ -55,8 +55,6 @@ describe('API', () => {
     const requestData = requestContext.getRequestData();
 
     await request.text();
-    await request.text();
-    await response.text();
     await response.text();
 
     await requestData.getRequest().text();
