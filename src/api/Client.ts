@@ -1,8 +1,7 @@
 import { v5 } from 'uuid';
-import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
+import { BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
-import { customFetchRetry } from './customFetchRetry';
 
 interface ApiClientParams extends BackendParams {
   body?: Record<string, any> | any[];
@@ -49,27 +48,23 @@ export abstract class APIClient {
   };
 
   public readonly fetch = async (url: string, method: RequestMethod, params: ApiClientParams): Promise<Response> => {
-    console.log('wip test');
-    this.logger.log('wip test');
-    this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
-
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
     const subRequestContext = new SubRequestContext({
-      request: req.clone(),
+      request: req,
       requestId: params.ctx.getRequestId(),
       accountId: params.ctx.getAccountId(),
     });
 
-    const res = await customFetchRetry(req, undefined, { subRequestContext });
+    const res = await fetchRetry(req, undefined, { subRequestContext });
     const subRequestData = subRequestContext.getRequestData();
-    params.ctx.addSubrequest(subRequestData.clone());
+    params.ctx.addSubrequest(subRequestData);
 
     if (res.status < 200 || res.status >= 400) {
       await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
 
-    return res.clone();
+    return res;
   };
 
   private readonly createRequest = async (
