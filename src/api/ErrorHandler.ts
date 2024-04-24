@@ -46,7 +46,7 @@ export class OctoApiErrorHandler {
       body,
       error: body?.error ?? null,
       requestId: requestContext.getRequestId(),
-      subRequestId: subRequestData.id,
+      subRequestId: subRequestData.getId(),
     };
 
     const error = this.errorMapper(body, errorParams, status);
