@@ -1,5 +1,5 @@
 import { v5 } from 'uuid';
-import { OctoBackend, BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
+import { BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
 
@@ -48,8 +48,6 @@ export abstract class APIClient {
   };
 
   public readonly fetch = async (url: string, method: RequestMethod, params: ApiClientParams): Promise<Response> => {
-    this.logger.log(`${new Date().toISOString()} ${method} ${url}`);
-
     const request = await this.createRequest(url, method, params);
     const req = await this.beforeRequest({ request });
     const subRequestContext = new SubRequestContext({
