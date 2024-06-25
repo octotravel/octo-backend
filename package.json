@@ -1,6 +1,6 @@
 {
   "name": "@octocloud/backend",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "license": "ISC",
   "author": "",
   "exports": {
@@ -31,7 +31,7 @@
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@octocloud/core": "^1.0.53",
+    "@octocloud/core": "^1.0.57",
     "@octocloud/types": "^1.5.24",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^1.3.7",
@@ -43,6 +43,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@octocloud/generators": "^1.0.6",
+    "@types/jest": "29.5.11",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",

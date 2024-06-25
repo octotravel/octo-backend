@@ -2,6 +2,7 @@ import { inject, singleton } from 'tsyringe';
 import { GetProductPathParamsSchema, Product } from '@octocloud/types';
 import { BackendParams, GetProductsPathParamsSchema } from '@octocloud/core';
 import type { IAPI } from '../api/Api';
+import { ProductHelper } from '../util/ProductHelper';
 
 export interface IProductService {
   getProduct: (schema: GetProductPathParamsSchema, params: BackendParams) => Promise<Product>;
@@ -14,9 +15,15 @@ export class ProductService implements IProductService {
     this.api = api;
   }
 
-  public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> =>
-    await this.api.getProduct(schema, params);
+  public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> => {
+    const product = await this.api.getProduct(schema, params);
 
-  public getProducts = async (schema: GetProductsPathParamsSchema, params: BackendParams): Promise<Product[]> =>
-    await this.api.getProducts(schema, params);
+    return ProductHelper.updateWithFilteredUnitPricing(product);
+  };
+
+  public getProducts = async (schema: GetProductsPathParamsSchema, params: BackendParams): Promise<Product[]> => {
+    const products = await this.api.getProducts(schema, params);
+
+    return products.map((product) => ProductHelper.updateWithFilteredUnitPricing(product));
+  };
 }
