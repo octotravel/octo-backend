@@ -1,29 +1,30 @@
-import * as yup from 'yup';
+import { BackendType } from '@octocloud/core';
+import { object, ObjectSchema, string } from 'yup';
 
 export interface OctoConnectionBackend {
-  type: 'octo';
+  type: BackendType.octo;
   endpoint: string;
   apiKey: string;
   supplierId: string;
 }
 
 export interface OctoConnectionPatchBackend {
-  type: 'octo';
+  type: BackendType.octo;
   endpoint?: string;
   apiKey?: string;
   supplierId?: string;
 }
 
-export const connectionSchema: yup.SchemaOf<OctoConnectionBackend> = yup.object().shape({
-  type: yup.string().equals(['octo']).required(),
-  endpoint: yup.string().url().required(),
-  apiKey: yup.string().required(),
-  supplierId: yup.string().required(),
+export const connectionSchema: ObjectSchema<OctoConnectionBackend> = object().shape({
+  type: string<BackendType.octo>().required(),
+  endpoint: string().url().required(),
+  apiKey: string().required(),
+  supplierId: string().required(),
 });
 
-export const connectionPatchSchema: yup.SchemaOf<OctoConnectionPatchBackend> = yup.object().shape({
-  type: yup.string().equals(['octo']).required(),
-  endpoint: yup.string().url().optional(),
-  apiKey: yup.string().optional(),
-  supplierId: yup.string().optional(),
+export const connectionPatchSchema: ObjectSchema<OctoConnectionPatchBackend> = object().shape({
+  type: string<BackendType.octo>().required(),
+  endpoint: string().url().optional(),
+  apiKey: string().optional(),
+  supplierId: string().optional(),
 });
