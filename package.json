@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:dry": "tsc --noEmit",
-    "build:dry:ci": "tsc --noEmit --tsBuildInfoFile ./.cache/tsc",
+    "build:dry:ci": "tsc --noEmit ./.cache/tsc",
     "check": "npm run build:dry && npm run format && npm run lint",
     "fix": "biome check --write .",
     "format": "biome format",

@@ -15,7 +15,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
-    "incremental": true,
     "typeRoots": ["./src/global.d.ts", "node_modules/@types"]
   },
   "files": ["./src/index.ts", "vitest.config.ts", "vitestSetup.ts"],
