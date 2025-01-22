@@ -99,13 +99,6 @@ jobs:
     env:
       working-directory: .
 
-  check-types:
-    name: Check Types
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      working-directory: .
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
