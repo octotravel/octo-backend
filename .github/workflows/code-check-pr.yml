@@ -150,8 +150,8 @@ jobs:
       - name: Run Biome
         run: biome ci .
 
-  run-common-tests:
-    name: Run common tests
+  run-tests:
+    name: Run tests
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -163,12 +163,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Create .env file
-        shell: bash
-        run: |
-          mv .env.ci .env
-        working-directory: ${{ env.working-directory }}
 
       - name: Setup node
         uses: actions/setup-node@v4
