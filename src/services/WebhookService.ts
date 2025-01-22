@@ -1,7 +1,7 @@
-import { inject, singleton } from 'tsyringe';
 import { BackendParams } from '@octocloud/core';
-import type { IAPI } from '../api/Api';
 import { CreateWebhookBodyParamsSchema, DeleteWebhookPathParamsSchema, Webhook } from '@octocloud/types';
+import { inject, singleton } from 'tsyringe';
+import type { IAPI } from '../api/Api';
 
 export interface IWebhookService {
   createWebhook: (schema: CreateWebhookBodyParamsSchema, params: BackendParams) => Promise<Webhook>;

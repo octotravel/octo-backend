@@ -1,5 +1,5 @@
-import { inject, singleton } from 'tsyringe';
 import { BackendParams } from '@octocloud/core';
+import { inject, singleton } from 'tsyringe';
 import type { IAPI } from '../api/Api';
 
 export interface IPaymentService {

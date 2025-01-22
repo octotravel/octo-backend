@@ -1,6 +1,6 @@
-import { inject, singleton } from 'tsyringe';
-import { GetProductPathParamsSchema, Product } from '@octocloud/types';
 import { BackendParams, GetProductsPathParamsSchema } from '@octocloud/core';
+import { GetProductPathParamsSchema, Product } from '@octocloud/types';
+import { inject, singleton } from 'tsyringe';
 import type { IAPI } from '../api/Api';
 import { ProductHelper } from '../util/ProductHelper';
 

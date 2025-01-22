@@ -1,6 +1,6 @@
-import { inject, singleton } from 'tsyringe';
-import { Supplier } from '@octocloud/types';
 import { BackendParams } from '@octocloud/core';
+import { Supplier } from '@octocloud/types';
+import { inject, singleton } from 'tsyringe';
 import type { IAPI } from '../api/Api';
 
 export interface ISupplierService {

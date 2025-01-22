@@ -1,5 +1,27 @@
-import { connectionSchema, connectionPatchSchema } from './schemas/Connection';
-import { inject, singleton } from 'tsyringe';
+import 'reflect-metadata';
+import {
+  Backend,
+  BackendParams,
+  BaseConfig,
+  CancelBookingSchema,
+  CancelOrderSchema,
+  ConfirmBookingSchema,
+  ConfirmOrderSchema,
+  CreateBookingSchema,
+  CreateOrderSchema,
+  ExtendBookingSchema,
+  ExtendOrderSchema,
+  GetBookingSchema,
+  GetBookingsSchema,
+  GetMappingsSchema,
+  GetOrderSchema,
+  GetProductsPathParamsSchema,
+  Logger,
+  LookupSchema,
+  UpdateBookingSchema,
+  UpdateMappingsSchema,
+  UpdateOrderSchema,
+} from '@octocloud/core';
 import {
   Availability,
   AvailabilityBodySchema,
@@ -7,51 +29,30 @@ import {
   AvailabilityCalendarBodySchema,
   Booking,
   Capability,
-  GetProductPathParamsSchema,
-  Mapping,
-  Product,
-  Supplier,
   CreateWebhookBodyParamsSchema,
   DeleteWebhookPathParamsSchema,
-  Webhook,
+  GetProductPathParamsSchema,
+  Mapping,
   Order,
+  Product,
+  Supplier,
+  Webhook,
 } from '@octocloud/types';
-import {
-  CancelOrderSchema,
-  ConfirmOrderSchema,
-  CreateOrderSchema,
-  ExtendOrderSchema,
-  GetBookingsSchema,
-  GetOrderSchema,
-  LookupSchema,
-  UpdateMappingsSchema,
-  UpdateOrderSchema,
-  Backend,
-  CancelBookingSchema,
-  ConfirmBookingSchema,
-  CreateBookingSchema,
-  ExtendBookingSchema,
-  GetBookingSchema,
-  GetProductsPathParamsSchema,
-  UpdateBookingSchema,
-  GetMappingsSchema,
-  BackendParams,
-  BaseConfig,
-  Logger,
-} from '@octocloud/core';
+import { inject, singleton } from 'tsyringe';
+import { connectionPatchSchema, connectionSchema } from './schemas/Connection';
 
-import { CheckInService } from './services/CheckinService';
-import { PaymentService } from './services/PaymentService';
-import { OrderService } from './services/OrderService';
-import { MappingService } from './services/MappingService';
-import { WebhookService } from './services/WebhookService';
-import { SupplierService } from './services/SupplierService';
-import { BookingService } from './services/BookingService';
-import { AvailabilityService } from './services/AvailabilityService';
-import { ProductService } from './services/ProductService';
-import { CapabilityService } from './services/CapabilityService';
 import { octoContainer } from './di';
 import { ConsoleLogger } from './models/ConsoleLogger';
+import { AvailabilityService } from './services/AvailabilityService';
+import { BookingService } from './services/BookingService';
+import { CapabilityService } from './services/CapabilityService';
+import { CheckInService } from './services/CheckinService';
+import { MappingService } from './services/MappingService';
+import { OrderService } from './services/OrderService';
+import { PaymentService } from './services/PaymentService';
+import { ProductService } from './services/ProductService';
+import { SupplierService } from './services/SupplierService';
+import { WebhookService } from './services/WebhookService';
 
 export type BeforeRequest = ({ request }: { request: Request }) => Promise<Request>;
 

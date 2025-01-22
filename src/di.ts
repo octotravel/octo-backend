@@ -1,15 +1,15 @@
-import { container, Lifecycle } from 'tsyringe';
+import { Lifecycle, container } from 'tsyringe';
+import { API } from './api/Api';
+import { AvailabilityService } from './services/AvailabilityService';
+import { BookingService } from './services/BookingService';
 import { CapabilityService } from './services/CapabilityService';
 import { CheckInService } from './services/CheckinService';
-import { PaymentService } from './services/PaymentService';
-import { OrderService } from './services/OrderService';
-import { WebhookService } from './services/WebhookService';
-import { SupplierService } from './services/SupplierService';
-import { ProductService } from './services/ProductService';
 import { MappingService } from './services/MappingService';
-import { BookingService } from './services/BookingService';
-import { AvailabilityService } from './services/AvailabilityService';
-import { API } from './api/Api';
+import { OrderService } from './services/OrderService';
+import { PaymentService } from './services/PaymentService';
+import { ProductService } from './services/ProductService';
+import { SupplierService } from './services/SupplierService';
+import { WebhookService } from './services/WebhookService';
 
 export const octoContainer = container.createChildContainer();
 

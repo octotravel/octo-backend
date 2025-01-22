@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { API } from '../Api';
 import { BaseConfig, Environment, Logger, NullLogger, RequestContext, RequestMethod } from '@octocloud/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BeforeRequest } from '../..';
+import { API } from '../Api';
 
 describe('API', () => {
   let api: API;

@@ -1,6 +1,26 @@
-import qs from 'query-string';
-import { BeforeRequest } from './../index';
-import { inject, singleton } from 'tsyringe';
+import {
+  BackendParams,
+  BaseConfig,
+  BaseConnection,
+  CancelBookingSchema,
+  CancelOrderSchema,
+  ConfirmBookingSchema,
+  ConfirmOrderSchema,
+  CreateBookingSchema,
+  CreateOrderSchema,
+  ExtendBookingSchema,
+  ExtendOrderSchema,
+  GetBookingSchema,
+  GetMappingsSchema,
+  GetOrderSchema,
+  GetProductsPathParamsSchema,
+  Logger,
+  LookupSchema,
+  OctoBackend,
+  UpdateBookingSchema,
+  UpdateMappingsSchema,
+  UpdateOrderSchema,
+} from '@octocloud/core';
 import type {
   Availability,
   AvailabilityBodySchema,
@@ -18,29 +38,9 @@ import type {
   Supplier,
   Webhook,
 } from '@octocloud/types';
-import {
-  BaseConnection,
-  OctoBackend,
-  BackendParams,
-  GetProductsPathParamsSchema,
-  CreateBookingSchema,
-  UpdateBookingSchema,
-  GetBookingSchema,
-  ConfirmBookingSchema,
-  CancelBookingSchema,
-  ExtendBookingSchema,
-  UpdateMappingsSchema,
-  CreateOrderSchema,
-  UpdateOrderSchema,
-  GetOrderSchema,
-  ConfirmOrderSchema,
-  CancelOrderSchema,
-  ExtendOrderSchema,
-  LookupSchema,
-  GetMappingsSchema,
-  BaseConfig,
-  Logger,
-} from '@octocloud/core';
+import qs from 'query-string';
+import { inject, singleton } from 'tsyringe';
+import { BeforeRequest } from './../index';
 import { APIClient } from './Client';
 
 export interface IAPI {

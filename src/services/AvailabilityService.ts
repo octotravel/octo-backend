@@ -1,10 +1,10 @@
-import { inject, singleton } from 'tsyringe';
 import {
   Availability,
   AvailabilityBodySchema,
   AvailabilityCalendar,
   AvailabilityCalendarBodySchema,
 } from '@octocloud/types';
+import { inject, singleton } from 'tsyringe';
 
 import { BackendParams } from '@octocloud/core';
 import type { IAPI } from '../api/Api';

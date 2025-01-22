@@ -1,9 +1,10 @@
+import { BackendParams, BaseConfig, Logger, SubRequestContext, fetchRetry } from '@octocloud/core';
 import { v5 } from 'uuid';
-import { BaseConfig, SubRequestContext, BackendParams, Logger, fetchRetry } from '@octocloud/core';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
 
 interface ApiClientParams extends BackendParams {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   body?: Record<string, any> | any[];
   headers?: HeadersInit;
 }

@@ -1,6 +1,6 @@
+import { BackendParams, GetMappingsSchema, UpdateMappingsSchema } from '@octocloud/core';
 import { Mapping } from '@octocloud/types';
 import { inject, singleton } from 'tsyringe';
-import { BackendParams, UpdateMappingsSchema, GetMappingsSchema } from '@octocloud/core';
 import type { IAPI } from '../api/Api';
 
 export interface IMappingService {

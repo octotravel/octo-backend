@@ -9,8 +9,8 @@ import {
   GetOrderSchema,
   UpdateOrderSchema,
 } from '@octocloud/core';
-import type { IAPI } from '../api/Api';
 import { Order } from '@octocloud/types';
+import type { IAPI } from '../api/Api';
 
 export interface IOrderService {
   createOrder: (schema: CreateOrderSchema, params: BackendParams) => Promise<Order>;
