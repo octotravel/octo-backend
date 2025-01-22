@@ -21,12 +21,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create .env file
-        shell: bash
-        run: |
-          mv .env.ci .env
-        working-directory: ${{ env.working-directory }}
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
