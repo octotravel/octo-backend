@@ -1,5 +1,4 @@
-import { inject, singleton } from 'tsyringe';
-
+import { inject } from '@needle-di/core';
 import {
   BackendParams,
   CancelOrderSchema,
@@ -22,9 +21,8 @@ export interface IOrderService {
   extendOrder: (schema: ExtendOrderSchema, params: BackendParams) => Promise<Order>;
 }
 
-@singleton()
 export class OrderService implements IOrderService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 

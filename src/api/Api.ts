@@ -39,7 +39,8 @@ import type {
   Webhook,
 } from '@octocloud/types';
 import qs from 'query-string';
-import { inject, singleton } from 'tsyringe';
+
+import { inject } from '@needle-di/core';
 import { BeforeRequest } from './../index';
 import { APIClient } from './Client';
 
@@ -78,12 +79,11 @@ export interface IAPI {
   getCapabilities: (params: BackendParams) => Promise<Capability[]>;
 }
 
-@singleton()
 export class API extends APIClient implements IAPI {
   public constructor(
-    @inject('BeforeRequest') beforeRequest: BeforeRequest,
-    @inject('Config') config: BaseConfig,
-    @inject('Logger') logger: Logger,
+    beforeRequest: BeforeRequest = inject('BeforeRequest'),
+    config: BaseConfig = inject('Config'),
+    logger: Logger = inject('Logger'),
   ) {
     super(beforeRequest, config, logger);
   }

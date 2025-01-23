@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {
   Backend,
   BackendParams,
@@ -38,9 +37,10 @@ import {
   Supplier,
   Webhook,
 } from '@octocloud/types';
-import { inject, singleton } from 'tsyringe';
+
 import { connectionPatchSchema, connectionSchema } from './schemas/Connection';
 
+import { inject } from '@needle-di/core';
 import { octoContainer } from './di';
 import { ConsoleLogger } from './models/ConsoleLogger';
 import { AvailabilityService } from './services/AvailabilityService';
@@ -71,10 +71,11 @@ export class BackendContainer {
 
   public constructor(data: BackendContainerData) {
     const { config, logger, beforeRequest } = data;
-    octoContainer.register('Config', { useValue: config });
-    octoContainer.register('Logger', { useValue: logger ?? new ConsoleLogger() });
-    octoContainer.register('BeforeRequest', { useValue: beforeRequest ?? noopBeforeRequest });
-    this._backend = octoContainer.resolve(OctoBackend);
+    octoContainer.bind({ provide: 'Config', useValue: config });
+    octoContainer.bind({ provide: 'Logger', useValue: logger ?? new ConsoleLogger() });
+    octoContainer.bind({ provide: 'BeforeRequest', useValue: beforeRequest ?? noopBeforeRequest });
+
+    this._backend = octoContainer.get(OctoBackend);
   }
 
   public get backend(): Backend {
@@ -82,19 +83,18 @@ export class BackendContainer {
   }
 }
 
-@singleton()
-class OctoBackend implements Backend {
+export class OctoBackend implements Backend {
   public constructor(
-    @inject('IProductService') private readonly productService: ProductService,
-    @inject('IAvailabilityService') private readonly availabilityService: AvailabilityService,
-    @inject('IBookingService') private readonly bookingService: BookingService,
-    @inject('ISupplierService') private readonly supplierService: SupplierService,
-    @inject('IWebhookService') private readonly webhookService: WebhookService,
-    @inject('IMappingService') private readonly mappingService: MappingService,
-    @inject('IOrderService') private readonly orderService: OrderService,
-    @inject('IPaymentService') private readonly paymentService: PaymentService,
-    @inject('ICheckInService') private readonly checkinService: CheckInService,
-    @inject('ICapabilityService') private readonly capabilityService: CapabilityService,
+    private readonly productService: ProductService = inject('IProductService'),
+    private readonly availabilityService: AvailabilityService = inject('IAvailabilityService'),
+    private readonly bookingService: BookingService = inject('IBookingService'),
+    private readonly supplierService: SupplierService = inject('ISupplierService'),
+    private readonly webhookService: WebhookService = inject('IWebhookService'),
+    private readonly mappingService: MappingService = inject('IMappingService'),
+    private readonly orderService: OrderService = inject('IOrderService'),
+    private readonly paymentService: PaymentService = inject('IPaymentService'),
+    private readonly checkinService: CheckInService = inject('ICheckInService'),
+    private readonly capabilityService: CapabilityService = inject('ICapabilityService'),
   ) {
     this.productService = productService;
     this.availabilityService = availabilityService;

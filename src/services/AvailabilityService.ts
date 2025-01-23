@@ -4,8 +4,8 @@ import {
   AvailabilityCalendar,
   AvailabilityCalendarBodySchema,
 } from '@octocloud/types';
-import { inject, singleton } from 'tsyringe';
 
+import { inject } from '@needle-di/core';
 import { BackendParams } from '@octocloud/core';
 import type { IAPI } from '../api/Api';
 import { UnitHelper } from '../util/UnitIHelper';
@@ -18,9 +18,8 @@ export interface IAvailabilityService {
   ) => Promise<AvailabilityCalendar[]>;
 }
 
-@singleton()
 export class AvailabilityService implements IAvailabilityService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 

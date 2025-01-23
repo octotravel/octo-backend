@@ -1,6 +1,7 @@
 import { BackendParams, GetProductsPathParamsSchema } from '@octocloud/core';
 import { GetProductPathParamsSchema, Product } from '@octocloud/types';
-import { inject, singleton } from 'tsyringe';
+
+import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
 import { ProductHelper } from '../util/ProductHelper';
 
@@ -9,9 +10,8 @@ export interface IProductService {
   getProducts: (schema: GetProductsPathParamsSchema, params: BackendParams) => Promise<Product[]>;
 }
 
-@singleton()
 export class ProductService implements IProductService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 

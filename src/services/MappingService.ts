@@ -1,6 +1,7 @@
 import { BackendParams, GetMappingsSchema, UpdateMappingsSchema } from '@octocloud/core';
 import { Mapping } from '@octocloud/types';
-import { inject, singleton } from 'tsyringe';
+
+import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
 
 export interface IMappingService {
@@ -8,9 +9,8 @@ export interface IMappingService {
   getMappings: (schema: GetMappingsSchema, params: BackendParams) => Promise<Mapping[]>;
 }
 
-@singleton()
 export class MappingService implements IMappingService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 
