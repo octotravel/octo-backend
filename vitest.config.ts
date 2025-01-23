@@ -20,7 +20,7 @@ export default defineConfig({
     hookTimeout: 30000,
     reporters: ['verbose'],
     include: ['**/__tests__/**/*.+(test.ts)'],
-    exclude: ['**/node_modules/**', '**/dist/**', '**/ops/**'],
+    exclude: ['**/node_modules/**', '**/dist/**'],
     setupFiles: ['./vitestSetup.ts'],
     coverage: {
       reporter: ['text', 'html', 'clover', 'json', 'json-summary'],
@@ -28,7 +28,7 @@ export default defineConfig({
       all: false,
       allowExternal: false,
       include: ['src/**/*.ts'],
-      exclude: ['vitestGlobalTeardown.ts', '**/node_modules/**', '**/__tests__/**'],
+      exclude: ['**/node_modules/**', '**/__tests__/**'],
       thresholds: {
         perFile: true,
         branches: 0,
