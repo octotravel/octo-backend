@@ -41,8 +41,6 @@ import {
 import { connectionPatchSchema, connectionSchema } from './schemas/Connection';
 
 import { inject } from '@needle-di/core';
-import { octoContainer } from './di';
-import { ConsoleLogger } from './models/ConsoleLogger';
 import { AvailabilityService } from './services/AvailabilityService';
 import { BookingService } from './services/BookingService';
 import { CapabilityService } from './services/CapabilityService';
@@ -54,34 +52,7 @@ import { ProductService } from './services/ProductService';
 import { SupplierService } from './services/SupplierService';
 import { WebhookService } from './services/WebhookService';
 
-export type BeforeRequest = ({ request }: { request: Request }) => Promise<Request>;
-
-interface BackendContainerData {
-  config: BaseConfig;
-  logger?: Logger;
-  beforeRequest?: BeforeRequest;
-}
-
-const noopBeforeRequest: BeforeRequest = async ({ request }) => {
-  return await Promise.resolve(request);
-};
-
-export class BackendContainer {
-  private readonly _backend: OctoBackend;
-
-  public constructor(data: BackendContainerData) {
-    const { config, logger, beforeRequest } = data;
-    octoContainer.bind({ provide: 'Config', useValue: config });
-    octoContainer.bind({ provide: 'Logger', useValue: logger ?? new ConsoleLogger() });
-    octoContainer.bind({ provide: 'BeforeRequest', useValue: beforeRequest ?? noopBeforeRequest });
-
-    this._backend = octoContainer.get(OctoBackend);
-  }
-
-  public get backend(): Backend {
-    return this._backend;
-  }
-}
+export * from './models/BackendContainer';
 
 export class OctoBackend implements Backend {
   public constructor(
@@ -95,18 +66,7 @@ export class OctoBackend implements Backend {
     private readonly paymentService: PaymentService = inject('IPaymentService'),
     private readonly checkinService: CheckInService = inject('ICheckInService'),
     private readonly capabilityService: CapabilityService = inject('ICapabilityService'),
-  ) {
-    this.productService = productService;
-    this.availabilityService = availabilityService;
-    this.bookingService = bookingService;
-    this.supplierService = supplierService;
-    this.webhookService = webhookService;
-    this.mappingService = mappingService;
-    this.orderService = orderService;
-    this.paymentService = paymentService;
-    this.checkinService = checkinService;
-    this.capabilityService = capabilityService;
-  }
+  ) {}
 
   public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> =>
     await this.productService.getProduct(schema, params);
