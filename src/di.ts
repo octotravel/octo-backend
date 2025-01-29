@@ -1,6 +1,6 @@
 import { Container } from '@needle-di/core';
-import { OctoBackend } from '.';
 import { API } from './api/Api';
+import { OctoBackend } from './models/OctoBackend';
 import { AvailabilityService } from './services/AvailabilityService';
 import { BookingService } from './services/BookingService';
 import { CapabilityService } from './services/CapabilityService';
