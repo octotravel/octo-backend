@@ -1,6 +1,6 @@
 {
   "name": "@octocloud/backend",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "license": "ISC",
   "author": "",
   "exports": {
@@ -33,8 +33,8 @@
   "types": "./dist/index.d.ts",
   "dependencies": {
     "@needle-di/core": "0.10.1",
-    "@octocloud/core": "octotravel/octo-core#feat/biomejs",
-    "@octocloud/types": "octotravel/octo-types#feat/biomejs",
+    "@octocloud/core": "^1.0.67",
+    "@octocloud/types": "^1.5.34",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^1.3.7",
     "dinero.js": "^2.0.0-alpha.8",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@octocloud/generators": "octotravel/octo-generator#feat/biomejs",
+    "@octocloud/generators": "^1.0.11",
     "@types/node": "^22.9.0",
     "typescript": "^5.7.2",
     "@types/uuid": "^9.0.0",
