@@ -1,124 +1,72 @@
-import { container, Lifecycle } from 'tsyringe';
+import { Container } from '@needle-di/core';
+import { API } from './api/Api';
+import { OctoBackend } from './models/OctoBackend';
+import { AvailabilityService } from './services/AvailabilityService';
+import { BookingService } from './services/BookingService';
 import { CapabilityService } from './services/CapabilityService';
 import { CheckInService } from './services/CheckinService';
-import { PaymentService } from './services/PaymentService';
-import { OrderService } from './services/OrderService';
-import { WebhookService } from './services/WebhookService';
-import { SupplierService } from './services/SupplierService';
-import { ProductService } from './services/ProductService';
 import { MappingService } from './services/MappingService';
-import { BookingService } from './services/BookingService';
-import { AvailabilityService } from './services/AvailabilityService';
-import { API } from './api/Api';
+import { OrderService } from './services/OrderService';
+import { PaymentService } from './services/PaymentService';
+import { ProductService } from './services/ProductService';
+import { SupplierService } from './services/SupplierService';
+import { WebhookService } from './services/WebhookService';
 
-export const octoContainer = container.createChildContainer();
+export const octoContainer = new Container();
 
-octoContainer.register(
-  'IAPI',
-  {
-    useClass: API,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind(OctoBackend);
 
-octoContainer.register(
-  'IAvailabilityService',
-  {
-    useClass: AvailabilityService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IAPI',
+  useClass: API,
+});
 
-octoContainer.register(
-  'IBookingService',
-  {
-    useClass: BookingService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IAvailabilityService',
+  useClass: AvailabilityService,
+});
 
-octoContainer.register(
-  'IMappingService',
-  {
-    useClass: MappingService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IBookingService',
+  useClass: BookingService,
+});
 
-octoContainer.register(
-  'IProductService',
-  {
-    useClass: ProductService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IMappingService',
+  useClass: MappingService,
+});
 
-octoContainer.register(
-  'ISupplierService',
-  {
-    useClass: SupplierService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IProductService',
+  useClass: ProductService,
+});
 
-octoContainer.register(
-  'IWebhookService',
-  {
-    useClass: WebhookService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'ISupplierService',
+  useClass: SupplierService,
+});
 
-octoContainer.register(
-  'IOrderService',
-  {
-    useClass: OrderService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IWebhookService',
+  useClass: WebhookService,
+});
 
-octoContainer.register(
-  'IPaymentService',
-  {
-    useClass: PaymentService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IOrderService',
+  useClass: OrderService,
+});
 
-octoContainer.register(
-  'ICheckInService',
-  {
-    useClass: CheckInService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'IPaymentService',
+  useClass: PaymentService,
+});
 
-octoContainer.register(
-  'ICapabilityService',
-  {
-    useClass: CapabilityService,
-  },
-  {
-    lifecycle: Lifecycle.Singleton,
-  },
-);
+octoContainer.bind({
+  provide: 'ICheckInService',
+  useClass: CheckInService,
+});
+
+octoContainer.bind({
+  provide: 'ICapabilityService',
+  useClass: CapabilityService,
+});

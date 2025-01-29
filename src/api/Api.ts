@@ -1,6 +1,26 @@
-import qs from 'query-string';
-import { BeforeRequest } from './../index';
-import { inject, singleton } from 'tsyringe';
+import {
+  BackendParams,
+  BaseConfig,
+  BaseConnection,
+  CancelBookingSchema,
+  CancelOrderSchema,
+  ConfirmBookingSchema,
+  ConfirmOrderSchema,
+  CreateBookingSchema,
+  CreateOrderSchema,
+  ExtendBookingSchema,
+  ExtendOrderSchema,
+  GetBookingSchema,
+  GetMappingsSchema,
+  GetOrderSchema,
+  GetProductsPathParamsSchema,
+  Logger,
+  LookupSchema,
+  OctoBackend,
+  UpdateBookingSchema,
+  UpdateMappingsSchema,
+  UpdateOrderSchema,
+} from '@octocloud/core';
 import type {
   Availability,
   AvailabilityBodySchema,
@@ -18,29 +38,10 @@ import type {
   Supplier,
   Webhook,
 } from '@octocloud/types';
-import {
-  BaseConnection,
-  OctoBackend,
-  BackendParams,
-  GetProductsPathParamsSchema,
-  CreateBookingSchema,
-  UpdateBookingSchema,
-  GetBookingSchema,
-  ConfirmBookingSchema,
-  CancelBookingSchema,
-  ExtendBookingSchema,
-  UpdateMappingsSchema,
-  CreateOrderSchema,
-  UpdateOrderSchema,
-  GetOrderSchema,
-  ConfirmOrderSchema,
-  CancelOrderSchema,
-  ExtendOrderSchema,
-  LookupSchema,
-  GetMappingsSchema,
-  BaseConfig,
-  Logger,
-} from '@octocloud/core';
+import qs from 'query-string';
+
+import { inject } from '@needle-di/core';
+import { BeforeRequest } from './../index';
 import { APIClient } from './Client';
 
 export interface IAPI {
@@ -78,12 +79,11 @@ export interface IAPI {
   getCapabilities: (params: BackendParams) => Promise<Capability[]>;
 }
 
-@singleton()
 export class API extends APIClient implements IAPI {
   public constructor(
-    @inject('BeforeRequest') beforeRequest: BeforeRequest,
-    @inject('Config') config: BaseConfig,
-    @inject('Logger') logger: Logger,
+    beforeRequest: BeforeRequest = inject('BeforeRequest'),
+    config: BaseConfig = inject('Config'),
+    logger: Logger = inject('Logger'),
   ) {
     super(beforeRequest, config, logger);
   }

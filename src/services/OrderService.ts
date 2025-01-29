@@ -1,5 +1,4 @@
-import { inject, singleton } from 'tsyringe';
-
+import { inject } from '@needle-di/core';
 import {
   BackendParams,
   CancelOrderSchema,
@@ -9,8 +8,8 @@ import {
   GetOrderSchema,
   UpdateOrderSchema,
 } from '@octocloud/core';
-import type { IAPI } from '../api/Api';
 import { Order } from '@octocloud/types';
+import type { IAPI } from '../api/Api';
 
 export interface IOrderService {
   createOrder: (schema: CreateOrderSchema, params: BackendParams) => Promise<Order>;
@@ -22,9 +21,8 @@ export interface IOrderService {
   extendOrder: (schema: ExtendOrderSchema, params: BackendParams) => Promise<Order>;
 }
 
-@singleton()
 export class OrderService implements IOrderService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 

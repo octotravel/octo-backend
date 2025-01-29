@@ -1,9 +1,8 @@
 import {
-  RequestContext,
-  HttpError,
-  HttpErrorParams,
   BAD_REQUEST,
   FORBIDDEN,
+  HttpError,
+  HttpErrorParams,
   INTERNAL_SERVER_ERROR,
   INVALID_AVAILABILITY_ID,
   INVALID_BOOKING_UUID,
@@ -20,9 +19,10 @@ import {
   OctoInvalidUnitIdError,
   OctoUnauthorizedError,
   OctoUnprocessableEntityError,
+  RequestContext,
+  SubRequestData,
   UNAUTHORIZED,
   UNPROCESSABLE_ENTITY,
-  SubRequestData,
 } from '@octocloud/core';
 
 export class OctoApiErrorHandler {
@@ -32,6 +32,7 @@ export class OctoApiErrorHandler {
     requestContext: RequestContext,
   ): Promise<void> {
     const status = response.status;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     let body: any;
 
     try {

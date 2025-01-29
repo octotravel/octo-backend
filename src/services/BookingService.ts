@@ -1,5 +1,3 @@
-import { inject, singleton } from 'tsyringe';
-import { Booking } from '@octocloud/types';
 import {
   BackendParams,
   CancelBookingSchema,
@@ -11,6 +9,9 @@ import {
   OctoBadRequestError,
   UpdateBookingSchema,
 } from '@octocloud/core';
+import { Booking } from '@octocloud/types';
+
+import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
 
 export interface IBookingService {
@@ -24,9 +25,8 @@ export interface IBookingService {
   getBookings: (schema: GetBookingsSchema, params: BackendParams) => Promise<Booking[]>;
 }
 
-@singleton()
 export class BookingService implements IBookingService {
-  public constructor(@inject('IAPI') private readonly api: IAPI) {
+  public constructor(private readonly api: IAPI = inject('IAPI')) {
     this.api = api;
   }
 
