@@ -127,5 +127,45 @@ describe('API', () => {
       expect(subrequest.getRetries()[0].getResponse().status).toBe(502);
       expect(subrequest.getRetries()[1].getResponse().status).toBe(500);
     });
+
+    it('should use forceRetry succeed at third retry', async () => {
+      global.fetch = vi
+        .fn()
+        .mockReturnValueOnce(
+          Promise.resolve(
+            new Response(
+              JSON.stringify({
+                error: 'TOO_MANY_REQUESTS',
+                errorMessage: 'Too many requests, please retry later',
+                retryAfter: 1,
+              }),
+              { status: 400 },
+            ),
+          ),
+        )
+        .mockReturnValueOnce(
+          Promise.resolve(
+            new Response(
+              JSON.stringify({
+                error: 'TOO_MANY_REQUESTS',
+                errorMessage: 'Too many requests, please retry later',
+                retryAfter: 2,
+              }),
+              { status: 400 },
+            ),
+          ),
+        )
+        .mockReturnValueOnce(Promise.resolve(new Response('{}', { status: 200 })));
+
+      const response = await api.fetch('https://octo.ventrata.com', RequestMethod.Get, {
+        ctx: requestContext,
+      });
+      const subrequest = requestContext.getSubRequests()[0];
+      expect(response.status).toBe(200);
+      expect(subrequest.getResponse().status).toBe(400);
+      expect(subrequest.getRetries().length).toBe(2);
+      expect(subrequest.getRetries()[0].getResponse().status).toBe(400);
+      expect(subrequest.getRetries()[1].getResponse().status).toBe(200);
+    });
   });
 });
