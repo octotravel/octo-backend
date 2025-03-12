@@ -1,4 +1,11 @@
-import { BackendParams, BaseConfig, Logger, SubRequestContext, fetchRetry } from '@octocloud/core';
+import {
+  BackendParams,
+  BaseConfig,
+  Logger,
+  ShouldForceRetryResult,
+  SubRequestContext,
+  fetchRetry,
+} from '@octocloud/core';
 import { v5 } from 'uuid';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
@@ -57,7 +64,26 @@ export abstract class APIClient {
       accountId: params.ctx.getAccountId(),
     });
 
-    const res = await fetchRetry(req, undefined, { subRequestContext });
+    const res = await fetchRetry(req, {
+      subRequestContext,
+      shouldForceRetry: async (response: Response): Promise<ShouldForceRetryResult> => {
+        try {
+          if (response.status !== 400) {
+            return { forceRetry: false, retryAfter: 0 };
+          }
+
+          const jsonResponse = await response.json();
+
+          if (jsonResponse?.error === 'TOO_MANY_REQUESTS' && jsonResponse?.retryAfter > 0) {
+            return { forceRetry: true, retryAfter: jsonResponse.retryAfter };
+          }
+
+          return { forceRetry: false, retryAfter: 0 };
+        } catch (e: unknown) {
+          return { forceRetry: false, retryAfter: 0 };
+        }
+      },
+    });
     const subRequestData = subRequestContext.getRequestData();
     params.ctx.addSubrequest(subRequestData);
 
