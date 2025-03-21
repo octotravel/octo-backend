@@ -107,6 +107,7 @@ export abstract class APIClient {
       'Octo-Capabilities': this.mapCapabilities(params),
       'Octo-Env': env,
       'Ventrata-Parent-Request-ID': params.ctx.getRequestId(),
+      'Ventrata-Ratelimit-Key': connection.id,
     };
 
     const headers: Record<string, string> = params.headers ? Object.assign(headersInit, params?.headers) : headersInit;
