@@ -134,6 +134,10 @@ export abstract class APIClient {
       headers['Idempotency-Key'] = uuid;
     }
 
+    if (params.useQueueOverflow === true) {
+      headers['Ventrata-Queue-Overflow'] = 'true';
+    }
+
     return new Request(url, {
       body,
       headers,
