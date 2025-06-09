@@ -29,7 +29,7 @@ export class AvailabilityService implements IAvailabilityService {
     if (params.useRawUnits) {
       return availabilities;
     }
-    
+
     return UnitHelper.updateWithFilteredFirstUnitPricing(availabilities);
   };
 
