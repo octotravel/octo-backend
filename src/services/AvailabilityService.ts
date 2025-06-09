@@ -25,6 +25,11 @@ export class AvailabilityService implements IAvailabilityService {
 
   public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> => {
     const availabilities = await this.api.getAvailability(schema, params);
+
+    if (params.useRawUnits) {
+      return availabilities;
+    }
+    
     return UnitHelper.updateWithFilteredFirstUnitPricing(availabilities);
   };
 
@@ -33,6 +38,10 @@ export class AvailabilityService implements IAvailabilityService {
     params: BackendParams,
   ): Promise<AvailabilityCalendar[]> => {
     const availabilityCalendars = await this.api.getAvailabilityCalendar(schema, params);
+
+    if (params.useRawUnits) {
+      return availabilityCalendars;
+    }
 
     return UnitHelper.updateWithFilteredFirstUnitCalendarPricing(availabilityCalendars);
   };
