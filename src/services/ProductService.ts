@@ -18,11 +18,19 @@ export class ProductService implements IProductService {
   public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> => {
     const product = await this.api.getProduct(schema, params);
 
+    if (params.useRawUnits) {
+      return product;
+    }
+
     return ProductHelper.updateWithFilteredUnitPricing(product);
   };
 
   public getProducts = async (schema: GetProductsPathParamsSchema, params: BackendParams): Promise<Product[]> => {
     const products = await this.api.getProducts(schema, params);
+
+    if (params.useRawUnits) {
+      return products;
+    }
 
     return products.map((product) => ProductHelper.updateWithFilteredUnitPricing(product));
   };
