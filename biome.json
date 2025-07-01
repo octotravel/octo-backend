@@ -24,8 +24,7 @@
         "useLiteralKeys": "off"
       },
       "correctness": {
-        "noUnusedVariables": "off",
-        "useArrayLiterals": "off"
+        "noUnusedVariables": "off"
       },
       "style": {
         "useBlockStatements": "off",
