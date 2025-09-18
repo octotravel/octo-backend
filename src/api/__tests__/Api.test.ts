@@ -25,6 +25,7 @@ describe('API', () => {
       environment: Environment.TEST,
       productionURL: '',
       stagingURL: '',
+      alertWebhookURL: '',
     });
     logger = new NullLogger();
     api = new API(beforeRequest, baseConfig, logger);

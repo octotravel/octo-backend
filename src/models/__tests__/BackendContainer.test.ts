@@ -11,6 +11,7 @@ describe('BackendContainer', () => {
         environment: Environment.TEST,
         productionURL: '',
         stagingURL: '',
+        alertWebhookURL: '',
       });
 
       const backendContainer = new BackendContainer({ config: baseConfig });
