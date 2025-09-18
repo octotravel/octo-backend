@@ -91,7 +91,7 @@ export abstract class APIClient {
 
     if (res.status < 200 || res.status >= 400) {
       if (res.status === 500) {
-        await this.alertLogger.alert(params.ctx, this.config);
+        this.alertLogger.alert(params.ctx, this.config);
       }
       await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
