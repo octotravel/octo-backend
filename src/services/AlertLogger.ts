@@ -2,14 +2,29 @@ import { BaseConfig, RequestContext, RequestMethod, fetchRetry } from '@octoclou
 
 export class AlertLogger {
   public alert = async (ctx: RequestContext, config: BaseConfig): Promise<void> => {
-    const text = `Env: ${ctx.getEnvironment()}\n
-Channel: ${ctx.getChannel()}\n
-Action: ${ctx.getAction()}\n
-URL: ${this.getRequestDashboardUrl(ctx.getRequestId())}\n`;
-
     if (!config.alertWebhookURL) {
       return;
     }
+
+    let channel: string;
+    let action: string;
+    
+    try {
+      channel = ctx.getChannel();
+    } catch {
+      channel = 'unknown';
+    }
+    
+    try {
+      action = ctx.getAction();
+    } catch {
+      action = 'unknown';
+    }
+
+    const text = `Env: ${ctx.getEnvironment()}\n
+Channel: ${channel}\n
+Action: ${action}\n
+URL: ${this.getRequestDashboardUrl(ctx.getRequestId())}\n`;
 
     const request = new Request(config.alertWebhookURL, {
       method: RequestMethod.Post,
