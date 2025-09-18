@@ -9,6 +9,7 @@ import {
 import { v5 } from 'uuid';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
+import { AlertLogger } from '../services/AlertLogger';
 
 interface ApiClientParams extends BackendParams {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -28,6 +29,7 @@ export enum RequestMethod {
 
 export abstract class APIClient {
   private readonly errorHandler = new OctoApiErrorHandler();
+  private readonly alertLogger = new AlertLogger();
 
   public constructor(
     private readonly beforeRequest: BeforeRequest,
@@ -88,6 +90,9 @@ export abstract class APIClient {
     params.ctx.addSubrequest(subRequestData);
 
     if (res.status < 200 || res.status >= 400) {
+      if (res.status === 500) {
+        await this.alertLogger.alert(params.ctx, this.config);
+      }
       await this.errorHandler.handleError(res, subRequestData, params.ctx);
     }
 
