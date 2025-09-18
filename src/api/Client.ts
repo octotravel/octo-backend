@@ -7,9 +7,9 @@ import {
   fetchRetry,
 } from '@octocloud/core';
 import { v5 } from 'uuid';
+import { AlertLogger } from '../services/AlertLogger';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
-import { AlertLogger } from '../services/AlertLogger';
 
 interface ApiClientParams extends BackendParams {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>

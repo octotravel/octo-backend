@@ -1,4 +1,4 @@
-import { BaseConfig, fetchRetry, RequestContext, RequestMethod } from '@octocloud/core';
+import { BaseConfig, RequestContext, RequestMethod, fetchRetry } from '@octocloud/core';
 
 export class AlertLogger {
   public alert = async (ctx: RequestContext, config: BaseConfig): Promise<void> => {
