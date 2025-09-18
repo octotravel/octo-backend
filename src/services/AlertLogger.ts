@@ -8,13 +8,13 @@ export class AlertLogger {
 
     let channel: string;
     let action: string;
-    
+
     try {
       channel = ctx.getChannel();
     } catch {
       channel = 'unknown';
     }
-    
+
     try {
       action = ctx.getAction();
     } catch {
