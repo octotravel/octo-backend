@@ -1,7 +1,5 @@
 import {
   BackendParams,
-  BaseConfig,
-  BaseConnection,
   CancelBookingSchema,
   CancelOrderSchema,
   ConfirmBookingSchema,
@@ -16,7 +14,6 @@ import {
   GetProductsPathParamsSchema,
   Logger,
   LookupSchema,
-  OctoBackend,
   UpdateBookingSchema,
   UpdateMappingsSchema,
   UpdateOrderSchema,
@@ -80,12 +77,8 @@ export interface IAPI {
 }
 
 export class API extends APIClient implements IAPI {
-  public constructor(
-    beforeRequest: BeforeRequest = inject('BeforeRequest'),
-    config: BaseConfig = inject('Config'),
-    logger: Logger = inject('Logger'),
-  ) {
-    super(beforeRequest, config, logger);
+  public constructor(beforeRequest: BeforeRequest = inject('BeforeRequest'), logger: Logger = inject('Logger')) {
+    super(beforeRequest, logger);
   }
 
   public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> => {

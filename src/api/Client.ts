@@ -1,6 +1,6 @@
 import {
   BackendParams,
-  BaseConfig,
+  Environment,
   Logger,
   ShouldForceRetryResult,
   SubRequestContext,
@@ -31,7 +31,6 @@ export abstract class APIClient {
 
   public constructor(
     private readonly beforeRequest: BeforeRequest,
-    private readonly config: BaseConfig,
     private readonly logger: Logger,
   ) {}
 
@@ -99,7 +98,7 @@ export abstract class APIClient {
     method: RequestMethod,
     params: ApiClientParams,
   ): Promise<Request> => {
-    const env = this.config.isProduction ? 'live' : 'test';
+    const env = params.ctx.getEnvironment() === Environment.PRODUCTION ? 'live' : 'test';
     const connection = params.ctx.getConnection();
     const headersInit = {
       'Content-Type': 'application/json',

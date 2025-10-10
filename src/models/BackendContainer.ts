@@ -1,5 +1,5 @@
 import { Container } from '@needle-di/core';
-import { Backend, BaseConfig, Logger } from '@octocloud/core';
+import { Backend, Logger } from '@octocloud/core';
 import { OctoBackend } from '..';
 import { API } from '../api/Api';
 import { AvailabilityService } from '../services/AvailabilityService';
@@ -17,7 +17,6 @@ import { ConsoleLogger } from './ConsoleLogger';
 export type BeforeRequest = ({ request }: { request: Request }) => Promise<Request>;
 
 interface BackendContainerData {
-  config: BaseConfig;
   logger?: Logger;
   beforeRequest?: BeforeRequest;
 }
@@ -30,9 +29,8 @@ export class BackendContainer {
   private readonly diContainer: Container = new Container();
 
   public constructor(data: BackendContainerData) {
-    const { config, logger, beforeRequest } = data;
+    const { logger, beforeRequest } = data;
 
-    this.diContainer.bind({ provide: 'Config', useValue: config });
     this.diContainer.bind({ provide: 'Logger', useValue: logger ?? new ConsoleLogger() });
     this.diContainer.bind({ provide: 'BeforeRequest', useValue: beforeRequest ?? noopBeforeRequest });
 
