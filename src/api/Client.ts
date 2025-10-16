@@ -1,13 +1,7 @@
-import {
-  BackendParams,
-  BaseConfig,
-  Logger,
-  ShouldForceRetryResult,
-  SubRequestContext,
-  fetchRetry,
-} from '@octocloud/core';
+import { fetchRetry, Logger, ShouldForceRetryResult, SubRequestContext } from '@octocloud/core';
 import { v5 } from 'uuid';
 import { BeforeRequest } from './../index';
+import { BackendParams } from '../types/Params';
 import { OctoApiErrorHandler } from './ErrorHandler';
 
 interface ApiClientParams extends BackendParams {
@@ -31,7 +25,6 @@ export abstract class APIClient {
 
   public constructor(
     private readonly beforeRequest: BeforeRequest,
-    private readonly config: BaseConfig,
     private readonly logger: Logger,
   ) {}
 
@@ -99,7 +92,8 @@ export abstract class APIClient {
     method: RequestMethod,
     params: ApiClientParams,
   ): Promise<Request> => {
-    const env = this.config.isProduction ? 'live' : 'test';
+    params.ctx.getEnvironment();
+    const env = params.ctx.getEnvironment() === 'production' ? 'live' : 'test';
     const connection = params.ctx.getConnection();
     const headersInit = {
       'Content-Type': 'application/json',

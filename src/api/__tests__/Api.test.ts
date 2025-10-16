@@ -1,4 +1,4 @@
-import { BaseConfig, Environment, Logger, NullLogger, RequestContext, RequestMethod } from '@octocloud/core';
+import { Environment, Logger, NullLogger, RequestContext, RequestMethod } from '@octocloud/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BeforeRequest } from '../..';
 import { API } from '../Api';
@@ -6,7 +6,6 @@ import { API } from '../Api';
 describe('API', () => {
   let api: API;
   let beforeRequest: BeforeRequest;
-  let baseConfig: BaseConfig;
   let logger: Logger;
   let request: Request;
   let response: Response;
@@ -21,13 +20,8 @@ describe('API', () => {
       return await Promise.resolve(request);
     };
 
-    baseConfig = new BaseConfig({
-      environment: Environment.TEST,
-      productionURL: '',
-      stagingURL: '',
-    });
     logger = new NullLogger();
-    api = new API(beforeRequest, baseConfig, logger);
+    api = new API(beforeRequest, logger);
     request = new Request('https://octo.ventrata.com', {
       headers: {
         'Content-Type': 'application/json',
@@ -35,6 +29,7 @@ describe('API', () => {
     });
     response = new Response('{}', { status: 200 });
     requestContext = new RequestContext({
+      environment: Environment.TEST,
       request,
     });
 

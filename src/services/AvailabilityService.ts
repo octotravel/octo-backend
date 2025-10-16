@@ -1,19 +1,17 @@
+import { inject } from '@needle-di/core';
 import {
   Availability,
-  AvailabilityBodySchema,
   AvailabilityCalendar,
-  AvailabilityCalendarBodySchema,
+  AvailabilityCalendarSchema,
+  AvailabilityCheckSchema,
 } from '@octocloud/types';
-
-import { inject } from '@needle-di/core';
-import { BackendParams } from '@octocloud/core';
 import type { IAPI } from '../api/Api';
-import { UnitHelper } from '../util/UnitIHelper';
+import { BackendParams } from '../types/Params';
 
 export interface IAvailabilityService {
-  getAvailability: (schema: AvailabilityBodySchema, params: BackendParams) => Promise<Availability[]>;
+  getAvailability: (schema: AvailabilityCheckSchema, params: BackendParams) => Promise<Availability[]>;
   getAvailabilityCalendar: (
-    schema: AvailabilityCalendarBodySchema,
+    schema: AvailabilityCalendarSchema,
     params: BackendParams,
   ) => Promise<AvailabilityCalendar[]>;
 }
@@ -23,26 +21,18 @@ export class AvailabilityService implements IAvailabilityService {
     this.api = api;
   }
 
-  public getAvailability = async (schema: AvailabilityBodySchema, params: BackendParams): Promise<Availability[]> => {
+  public getAvailability = async (schema: AvailabilityCheckSchema, params: BackendParams): Promise<Availability[]> => {
     const availabilities = await this.api.getAvailability(schema, params);
 
-    if (params.useRawUnits) {
-      return availabilities;
-    }
-
-    return UnitHelper.updateWithFilteredFirstUnitPricing(availabilities);
+    return availabilities;
   };
 
   public getAvailabilityCalendar = async (
-    schema: AvailabilityCalendarBodySchema,
+    schema: AvailabilityCalendarSchema,
     params: BackendParams,
   ): Promise<AvailabilityCalendar[]> => {
     const availabilityCalendars = await this.api.getAvailabilityCalendar(schema, params);
 
-    if (params.useRawUnits) {
-      return availabilityCalendars;
-    }
-
-    return UnitHelper.updateWithFilteredFirstUnitCalendarPricing(availabilityCalendars);
+    return availabilityCalendars;
   };
 }
