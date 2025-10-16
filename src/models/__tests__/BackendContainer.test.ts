@@ -1,4 +1,3 @@
-import { BaseConfig, Environment } from '@octocloud/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { BackendContainer } from '../BackendContainer';
 
@@ -7,13 +6,7 @@ describe('BackendContainer', () => {
 
   describe('constructor', () => {
     it('should correctly initialize and set class properties', () => {
-      const baseConfig = new BaseConfig({
-        environment: Environment.TEST,
-        productionURL: '',
-        stagingURL: '',
-      });
-
-      const backendContainer = new BackendContainer({ config: baseConfig });
+      const backendContainer = new BackendContainer({});
       expect(backendContainer.backend).toBeDefined();
     });
   });
