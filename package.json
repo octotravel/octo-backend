@@ -1,6 +1,6 @@
 {
   "name": "@octocloud/backend",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "license": "ISC",
   "author": "",
   "exports": {
@@ -12,7 +12,9 @@
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:dry": "tsc --noEmit",
