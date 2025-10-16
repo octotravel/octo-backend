@@ -1,6 +1,4 @@
 import {
-  BackendParams,
-  BaseConfig,
   Logger,
   ShouldForceRetryResult,
   SubRequestContext,
@@ -9,6 +7,7 @@ import {
 import { v5 } from 'uuid';
 import { BeforeRequest } from './../index';
 import { OctoApiErrorHandler } from './ErrorHandler';
+import { BackendParams } from '../types/Params';
 
 interface ApiClientParams extends BackendParams {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -31,7 +30,6 @@ export abstract class APIClient {
 
   public constructor(
     private readonly beforeRequest: BeforeRequest,
-    private readonly config: BaseConfig,
     private readonly logger: Logger,
   ) {}
 
@@ -99,7 +97,8 @@ export abstract class APIClient {
     method: RequestMethod,
     params: ApiClientParams,
   ): Promise<Request> => {
-    const env = this.config.isProduction ? 'live' : 'test';
+    params.ctx.getEnvironment()
+    const env = params.ctx.getEnvironment() === 'production' ? 'live' : 'test';
     const connection = params.ctx.getConnection();
     const headersInit = {
       'Content-Type': 'application/json',
