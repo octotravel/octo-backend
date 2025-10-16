@@ -1,27 +1,18 @@
-import {
-  BackendParams,
-  CancelBookingSchema,
-  ConfirmBookingSchema,
-  CreateBookingSchema,
-  ExtendBookingSchema,
-  GetBookingSchema,
-  GetBookingsSchema,
-  OctoBadRequestError,
-  UpdateBookingSchema,
-} from '@octocloud/core';
-import { Booking } from '@octocloud/types';
+import { Booking, BookingCancellationSchema, BookingConfirmationSchema, BookingReservationSchema, BookingUpdateSchema, ExtendReservationSchema, GetBookingSchema, GetBookingsSchema } from '@octocloud/types';
 
 import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
+import { BackendParams } from '../types/Params';
+import { OctoBadRequestError } from '@octocloud/core';
 
 export interface IBookingService {
-  createBooking: (schema: CreateBookingSchema, params: BackendParams) => Promise<Booking>;
-  updateBooking: (schema: UpdateBookingSchema, params: BackendParams) => Promise<Booking>;
+  createBooking: (schema: BookingReservationSchema, params: BackendParams) => Promise<Booking>;
+  updateBooking: (schema: BookingUpdateSchema, params: BackendParams) => Promise<Booking>;
   getBooking: (schema: GetBookingSchema, params: BackendParams) => Promise<Booking>;
-  confirmBooking: (schema: ConfirmBookingSchema, params: BackendParams) => Promise<Booking>;
-  cancelBooking: (schema: CancelBookingSchema, params: BackendParams) => Promise<Booking>;
-  deleteBooking: (schema: CancelBookingSchema, params: BackendParams) => Promise<Booking>;
-  extendBooking: (schema: ExtendBookingSchema, params: BackendParams) => Promise<Booking>;
+  confirmBooking: (schema: BookingConfirmationSchema, params: BackendParams) => Promise<Booking>;
+  cancelBooking: (schema: BookingCancellationSchema, params: BackendParams) => Promise<Booking>;
+  deleteBooking: (schema: BookingCancellationSchema, params: BackendParams) => Promise<Booking>;
+  extendBooking: (schema: ExtendReservationSchema, params: BackendParams) => Promise<Booking>;
   getBookings: (schema: GetBookingsSchema, params: BackendParams) => Promise<Booking[]>;
 }
 
@@ -30,16 +21,16 @@ export class BookingService implements IBookingService {
     this.api = api;
   }
 
-  public createBooking = async (schema: CreateBookingSchema, params: BackendParams): Promise<Booking> =>
+  public createBooking = async (schema: BookingReservationSchema, params: BackendParams): Promise<Booking> =>
     await this.api.createBooking(schema, params);
 
-  public updateBooking = async (schema: UpdateBookingSchema, params: BackendParams): Promise<Booking> =>
+  public updateBooking = async (schema: BookingUpdateSchema, params: BackendParams): Promise<Booking> =>
     await this.api.updateBooking(schema, params);
 
   public getBooking = async (schema: GetBookingSchema, params: BackendParams): Promise<Booking> =>
     await this.api.getBooking(schema, params);
 
-  public confirmBooking = async (schema: ConfirmBookingSchema, params: BackendParams): Promise<Booking> => {
+  public confirmBooking = async (schema: BookingConfirmationSchema, params: BackendParams): Promise<Booking> => {
     try {
       const booking = await this.api.confirmBooking(schema, params);
       return booking;
@@ -51,13 +42,13 @@ export class BookingService implements IBookingService {
     }
   };
 
-  public cancelBooking = async (schema: CancelBookingSchema, params: BackendParams): Promise<Booking> =>
+  public cancelBooking = async (schema: BookingCancellationSchema, params: BackendParams): Promise<Booking> =>
     await this.api.cancelBooking(schema, params);
 
-  public deleteBooking = async (schema: CancelBookingSchema, params: BackendParams): Promise<Booking> =>
+  public deleteBooking = async (schema: BookingCancellationSchema, params: BackendParams): Promise<Booking> =>
     await this.api.deleteBooking(schema, params);
 
-  public extendBooking = async (schema: ExtendBookingSchema, params: BackendParams): Promise<Booking> =>
+  public extendBooking = async (schema: ExtendReservationSchema, params: BackendParams): Promise<Booking> =>
     await this.api.extendBooking(schema, params);
 
   public getBookings = async (schema: GetBookingsSchema, params: BackendParams): Promise<Booking[]> =>

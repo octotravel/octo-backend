@@ -1,8 +1,8 @@
-import { BackendParams } from '@octocloud/core';
 import { Capability } from '@octocloud/types';
 
 import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
+import { BackendParams } from '../types/Params';
 
 export interface ICapabilityService {
   getCapabilities: (params: BackendParams) => Promise<Capability[]>;

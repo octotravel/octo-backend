@@ -1,13 +1,12 @@
-import { BackendParams, GetProductsPathParamsSchema } from '@octocloud/core';
-import { GetProductPathParamsSchema, Product } from '@octocloud/types';
 
 import { inject } from '@needle-di/core';
 import type { IAPI } from '../api/Api';
-import { ProductHelper } from '../util/ProductHelper';
+import { BackendParams } from '../types/Params';
+import { GetProductSchema, GetProductsSchema, Product } from '@octocloud/types';
 
 export interface IProductService {
-  getProduct: (schema: GetProductPathParamsSchema, params: BackendParams) => Promise<Product>;
-  getProducts: (schema: GetProductsPathParamsSchema, params: BackendParams) => Promise<Product[]>;
+  getProduct: (schema: GetProductSchema, params: BackendParams) => Promise<Product>;
+  getProducts: (schema: GetProductsSchema, params: BackendParams) => Promise<Product[]>;
 }
 
 export class ProductService implements IProductService {
@@ -15,23 +14,13 @@ export class ProductService implements IProductService {
     this.api = api;
   }
 
-  public getProduct = async (schema: GetProductPathParamsSchema, params: BackendParams): Promise<Product> => {
+  public getProduct = async (schema: GetProductSchema, params: BackendParams): Promise<Product> => {
     const product = await this.api.getProduct(schema, params);
-
-    if (params.useRawUnits) {
-      return product;
-    }
-
-    return ProductHelper.updateWithFilteredUnitPricing(product);
+    return product;
   };
 
-  public getProducts = async (schema: GetProductsPathParamsSchema, params: BackendParams): Promise<Product[]> => {
+  public getProducts = async (schema: GetProductsSchema, params: BackendParams): Promise<Product[]> => {
     const products = await this.api.getProducts(schema, params);
-
-    if (params.useRawUnits) {
-      return products;
-    }
-
-    return products.map((product) => ProductHelper.updateWithFilteredUnitPricing(product));
+    return products;
   };
 }

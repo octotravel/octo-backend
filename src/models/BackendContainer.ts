@@ -1,23 +1,17 @@
 import { Container } from '@needle-di/core';
-import { Backend, BaseConfig, Logger } from '@octocloud/core';
+import { Logger } from '@octocloud/core';
 import { OctoBackend } from '..';
 import { API } from '../api/Api';
 import { AvailabilityService } from '../services/AvailabilityService';
 import { BookingService } from '../services/BookingService';
 import { CapabilityService } from '../services/CapabilityService';
-import { CheckInService } from '../services/CheckinService';
-import { MappingService } from '../services/MappingService';
-import { OrderService } from '../services/OrderService';
-import { PaymentService } from '../services/PaymentService';
 import { ProductService } from '../services/ProductService';
 import { SupplierService } from '../services/SupplierService';
-import { WebhookService } from '../services/WebhookService';
 import { ConsoleLogger } from './ConsoleLogger';
 
 export type BeforeRequest = ({ request }: { request: Request }) => Promise<Request>;
 
 interface BackendContainerData {
-  config: BaseConfig;
   logger?: Logger;
   beforeRequest?: BeforeRequest;
 }
@@ -30,9 +24,8 @@ export class BackendContainer {
   private readonly diContainer: Container = new Container();
 
   public constructor(data: BackendContainerData) {
-    const { config, logger, beforeRequest } = data;
+    const { logger, beforeRequest } = data;
 
-    this.diContainer.bind({ provide: 'Config', useValue: config });
     this.diContainer.bind({ provide: 'Logger', useValue: logger ?? new ConsoleLogger() });
     this.diContainer.bind({ provide: 'BeforeRequest', useValue: beforeRequest ?? noopBeforeRequest });
 
@@ -54,11 +47,6 @@ export class BackendContainer {
     });
 
     this.diContainer.bind({
-      provide: 'IMappingService',
-      useClass: MappingService,
-    });
-
-    this.diContainer.bind({
       provide: 'IProductService',
       useClass: ProductService,
     });
@@ -68,25 +56,6 @@ export class BackendContainer {
       useClass: SupplierService,
     });
 
-    this.diContainer.bind({
-      provide: 'IWebhookService',
-      useClass: WebhookService,
-    });
-
-    this.diContainer.bind({
-      provide: 'IOrderService',
-      useClass: OrderService,
-    });
-
-    this.diContainer.bind({
-      provide: 'IPaymentService',
-      useClass: PaymentService,
-    });
-
-    this.diContainer.bind({
-      provide: 'ICheckInService',
-      useClass: CheckInService,
-    });
 
     this.diContainer.bind({
       provide: 'ICapabilityService',
@@ -94,7 +63,7 @@ export class BackendContainer {
     });
   }
 
-  public get backend(): Backend {
+  public get backend(): OctoBackend {
     return this.diContainer.get(OctoBackend);
   }
 }
