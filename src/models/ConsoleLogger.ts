@@ -1,4 +1,4 @@
-import { LogLevel, Logger } from '@octocloud/core';
+import { Logger, LogLevel } from '@octocloud/core';
 
 export class ConsoleLogger implements Logger {
   public async fatal(message: string, context?: unknown): Promise<void> {

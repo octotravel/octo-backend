@@ -1,32 +1,29 @@
+import { inject } from '@needle-di/core';
 import {
   Availability,
   AvailabilityCalendar,
-  Booking,
-  Capability,
-  Supplier,
-  Product,
-  GetProductSchema,
-  GetProductsSchema,
-  AvailabilityCheckSchema,
   AvailabilityCalendarSchema,
-  GetBookingSchema,
+  AvailabilityCheckSchema,
+  Booking,
+  BookingCancellationSchema,
   BookingConfirmationSchema,
   BookingReservationSchema,
   BookingUpdateSchema,
-  BookingCancellationSchema,
+  Capability,
   ExtendReservationSchema,
+  GetBookingSchema,
   GetBookingsSchema,
+  GetProductSchema,
+  GetProductsSchema,
+  Product,
+  Supplier,
 } from '@octocloud/types';
-
-
-import { inject } from '@needle-di/core';
 import { AvailabilityService } from '../services/AvailabilityService';
 import { BookingService } from '../services/BookingService';
 import { CapabilityService } from '../services/CapabilityService';
 import { ProductService } from '../services/ProductService';
 import { SupplierService } from '../services/SupplierService';
 import { BackendParams } from '../types/Params';
-
 
 export class OctoBackend {
   public constructor(

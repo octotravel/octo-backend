@@ -1,8 +1,7 @@
-
 import { inject } from '@needle-di/core';
+import { GetProductSchema, GetProductsSchema, Product } from '@octocloud/types';
 import type { IAPI } from '../api/Api';
 import { BackendParams } from '../types/Params';
-import { GetProductSchema, GetProductsSchema, Product } from '@octocloud/types';
 
 export interface IProductService {
   getProduct: (schema: GetProductSchema, params: BackendParams) => Promise<Product>;

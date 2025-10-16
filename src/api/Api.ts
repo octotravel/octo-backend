@@ -1,3 +1,5 @@
+import { inject } from '@needle-di/core';
+import { Logger } from '@octocloud/core';
 import type {
   Availability,
   AvailabilityCalendar,
@@ -18,12 +20,9 @@ import type {
   Supplier,
 } from '@octocloud/types';
 import qs from 'query-string';
-
-import { inject } from '@needle-di/core';
 import { BeforeRequest } from './../index';
-import { APIClient } from './Client';
 import { BackendParams } from '../types/Params';
-import { Logger } from '@octocloud/core';
+import { APIClient } from './Client';
 
 export interface IAPI {
   getProduct: (schema: GetProductSchema, params: BackendParams) => Promise<Product>;
@@ -47,10 +46,7 @@ export interface IAPI {
 }
 
 export class API extends APIClient implements IAPI {
-  public constructor(
-    beforeRequest: BeforeRequest = inject('BeforeRequest'),
-    logger: Logger = inject('Logger'),
-  ) {
+  public constructor(beforeRequest: BeforeRequest = inject('BeforeRequest'), logger: Logger = inject('Logger')) {
     super(beforeRequest, logger);
   }
 
@@ -163,7 +159,10 @@ export class API extends APIClient implements IAPI {
     return await response.json();
   };
 
-  public extendBooking = async ({ uuid, ...schema }: ExtendReservationSchema, params: BackendParams): Promise<Booking> => {
+  public extendBooking = async (
+    { uuid, ...schema }: ExtendReservationSchema,
+    params: BackendParams,
+  ): Promise<Booking> => {
     const url = `${params.ctx.getConnection().endpoint}/bookings/${uuid}/extend`;
 
     const body = { ...schema };
@@ -176,7 +175,10 @@ export class API extends APIClient implements IAPI {
     return await response.json();
   };
 
-  public cancelBooking = async ({ uuid, ...schema }: BookingCancellationSchema, params: BackendParams): Promise<Booking> => {
+  public cancelBooking = async (
+    { uuid, ...schema }: BookingCancellationSchema,
+    params: BackendParams,
+  ): Promise<Booking> => {
     const url = `${params.ctx.getConnection().endpoint}/bookings/${uuid}/cancel`;
     const body = { ...schema };
 
@@ -187,7 +189,10 @@ export class API extends APIClient implements IAPI {
     return await response.json();
   };
 
-  public deleteBooking = async ({ uuid, ...schema }: BookingCancellationSchema, params: BackendParams): Promise<Booking> => {
+  public deleteBooking = async (
+    { uuid, ...schema }: BookingCancellationSchema,
+    params: BackendParams,
+  ): Promise<Booking> => {
     const url = `${params.ctx.getConnection().endpoint}/bookings/${uuid}`;
     const body = { ...schema };
 

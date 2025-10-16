@@ -56,7 +56,6 @@ export class BackendContainer {
       useClass: SupplierService,
     });
 
-
     this.diContainer.bind({
       provide: 'ICapabilityService',
       useClass: CapabilityService,

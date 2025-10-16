@@ -1,13 +1,8 @@
-import {
-  Logger,
-  ShouldForceRetryResult,
-  SubRequestContext,
-  fetchRetry,
-} from '@octocloud/core';
+import { fetchRetry, Logger, ShouldForceRetryResult, SubRequestContext } from '@octocloud/core';
 import { v5 } from 'uuid';
 import { BeforeRequest } from './../index';
-import { OctoApiErrorHandler } from './ErrorHandler';
 import { BackendParams } from '../types/Params';
+import { OctoApiErrorHandler } from './ErrorHandler';
 
 interface ApiClientParams extends BackendParams {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -97,7 +92,7 @@ export abstract class APIClient {
     method: RequestMethod,
     params: ApiClientParams,
   ): Promise<Request> => {
-    params.ctx.getEnvironment()
+    params.ctx.getEnvironment();
     const env = params.ctx.getEnvironment() === 'production' ? 'live' : 'test';
     const connection = params.ctx.getConnection();
     const headersInit = {

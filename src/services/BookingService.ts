@@ -1,9 +1,17 @@
-import { Booking, BookingCancellationSchema, BookingConfirmationSchema, BookingReservationSchema, BookingUpdateSchema, ExtendReservationSchema, GetBookingSchema, GetBookingsSchema } from '@octocloud/types';
-
 import { inject } from '@needle-di/core';
+import { OctoBadRequestError } from '@octocloud/core';
+import {
+  Booking,
+  BookingCancellationSchema,
+  BookingConfirmationSchema,
+  BookingReservationSchema,
+  BookingUpdateSchema,
+  ExtendReservationSchema,
+  GetBookingSchema,
+  GetBookingsSchema,
+} from '@octocloud/types';
 import type { IAPI } from '../api/Api';
 import { BackendParams } from '../types/Params';
-import { OctoBadRequestError } from '@octocloud/core';
 
 export interface IBookingService {
   createBooking: (schema: BookingReservationSchema, params: BackendParams) => Promise<Booking>;
